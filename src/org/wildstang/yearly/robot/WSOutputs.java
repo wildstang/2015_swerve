@@ -59,4 +59,11 @@ public enum WSOutputs implements Outputs
       return m_trackingState;
    }
 
+
+@Override
+public Object getDefault() {
+	// TODO Auto-generated method stub
+	return null;
+}
+
 }

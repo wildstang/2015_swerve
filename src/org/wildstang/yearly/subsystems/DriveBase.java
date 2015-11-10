@@ -12,7 +12,8 @@ public class DriveBase implements Subsystem
 {
    // WsVictor victor1;
    // WsVictor victor2; NO - new framework doesn't require this
-   double throttle;
+   double rightThrottle;
+   double leftThrottle;
 
    public DriveBase(String name)
    {
@@ -22,21 +23,21 @@ public class DriveBase implements Subsystem
    @Override
    public void inputUpdate(Input source)
    {
-//      if (source.getName() == WSInputs.DRV_BUTTON_1.getName())
-//      {
-//
-//      }
-//      if (source.getName() == WSInputs.DRV_THROTTLE.getName())
-//      {
-//         throttle = ((AnalogInput) source).getValue();
-//      }
+      if (source.getName() == WSInputs.DRV_RIGHT_Y.getName())
+      {
+    	  rightThrottle = ((AnalogInput) source).getValue();
+      }
+      if (source.getName() == WSInputs.DRV_THROTTLE.getName())
+      {
+         leftThrottle = ((AnalogInput) source).getValue();
+      }
    }
 
    @Override
    public void init()
    {
-//      Core.getInputManager().getInput(WSInputs.DRV_HEADING.getName()).addInputListener(this);
-//      Core.getInputManager().getInput(WSInputs.DRV_THROTTLE.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.DRV_RIGHT_Y.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.DRV_THROTTLE.getName()).addInputListener(this);
    }
 
    @Override
@@ -49,7 +50,8 @@ public class DriveBase implements Subsystem
    @Override
    public void update()
    {
-      ((AnalogOutput) Core.getOutputManager().getOutput(WSOutputs.VICTOR.getName())).setValue(throttle);
+      ((AnalogOutput) Core.getOutputManager().getOutput(WSOutputs.VICTOR.getName())).setValue(rightThrottle);
+      ((AnalogOutput) Core.getOutputManager().getOutput(WSOutputs.TALON.getName())).setValue(leftThrottle);
 
    }
 
