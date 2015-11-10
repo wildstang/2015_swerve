@@ -14,10 +14,16 @@ import org.wildstang.hardware.crio.outputs.config.WsVictorConfig;
 
 public enum WSOutputs implements Outputs
 {
-   VICTOR("Victor",          WSOutputType.VICTOR,    new WsVictorConfig(0, 0.0), true),
-   TALON("Talon",            WSOutputType.TALON,     new WsTalonConfig(1,  0.0), true),
-   VICTOR_SP("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(2,  0.0), true),
-   SPIKE("Spike",            WSOutputType.RELAY,     new WsRelayConfig(3, WsRelayState.RELAY_ON), true),
+   VICTOR_URD("Victor SP",          WSOutputType.VICTOR,    new WsVictorConfig(0, 0.0), true),
+//   TALON("Talon",            WSOutputType.TALON,     new WsTalonConfig(1,  0.0), true),
+   VICTOR_ULD("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(1,  0.0), true),
+//   SPIKE("Spike",            WSOutputType.RELAY,     new WsRelayConfig(3, WsRelayState.RELAY_ON), true),
+   VICTOR_URR("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(2,  0.0), true),
+   VICTOR_ULR("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(3,  0.0), true),
+   VICTOR_LRD("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(4,  0.0), true),
+   VICTOR_LLD("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(5,  0.0), true),
+   VICTOR_LRR("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(6,  0.0), true),
+   VICTOR_LLR("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(7,  0.0), true),
 
    // Solenoids
    DOUBLE("Double solenoid", WSOutputType.SOLENOID_DOUBLE, new WsDoubleSolenoidConfig(1, 0, 1, WsDoubleSolenoidState.FORWARD), true),

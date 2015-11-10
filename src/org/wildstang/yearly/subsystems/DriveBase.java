@@ -14,12 +14,9 @@ import org.wildstang.yearly.robot.WSOutputs;
 
 public class DriveBase implements Subsystem
 {
-   // WsVictor victor1;
-   // WsVictor victor2; NO - new framework doesn't require this
-   double rightThrottle;
-   double leftThrottle;
-   double manipulator;
-   boolean pneumatic;
+   double leftX;
+   double leftY;
+   double rightX;
 
    public DriveBase(String name)
    {
@@ -29,31 +26,30 @@ public class DriveBase implements Subsystem
    @Override
    public void inputUpdate(Input source)
    {
-      if (source.getName() == WSInputs.DRV_RIGHT_Y.getName())
-      {
-    	  rightThrottle = ((AnalogInput) source).getValue();
-      }
+
       if (source.getName() == WSInputs.DRV_THROTTLE.getName())
       {
-         leftThrottle = ((AnalogInput) source).getValue();
+         leftY = ((AnalogInput) source).getValue();
       }
-      if (source.getName() == WSInputs.MAN_RIGHT_JOYSTICK_Y.getName())
+      if (source.getName() == WSInputs.DRV_LEFT_X.getName())
       {
-          manipulator = ((AnalogInput) source).getValue();
-       }
-      if (source.getName() == WSInputs.DRV_BUTTON_1.getName())
+         leftX = ((AnalogInput) source).getValue();
+      }
+      if (source.getName() == WSInputs.DRV_HEADING.getName())
       {
-          pneumatic = ((DigitalInput)source).getValue();
-       }
+         rightX = ((AnalogInput) source).getValue();
+      }
+      
+
    }
 
    @Override
    public void init()
    {
-      Core.getInputManager().getInput(WSInputs.DRV_RIGHT_Y.getName()).addInputListener(this);
       Core.getInputManager().getInput(WSInputs.DRV_THROTTLE.getName()).addInputListener(this);
-      Core.getInputManager().getInput(WSInputs.MAN_RIGHT_JOYSTICK_Y.getName()).addInputListener(this);
-      Core.getInputManager().getInput(WSInputs.DRV_BUTTON_1.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.DRV_LEFT_X.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.DRV_HEADING.getName()).addInputListener(this);
+      
    }
 
    @Override
@@ -66,10 +62,10 @@ public class DriveBase implements Subsystem
    @Override
    public void update()
    {
-      ((WsVictor) Core.getOutputManager().getOutput(WSOutputs.VICTOR.getName())).setValue(rightThrottle);
-      ((WsTalon) Core.getOutputManager().getOutput(WSOutputs.TALON.getName())).setValue(leftThrottle);
-      ((WsVictor) Core.getOutputManager().getOutput(WSOutputs.VICTOR_SP.getName())).setValue(manipulator);
-      ((WsSolenoid) Core.getOutputManager().getOutput(WSOutputs.SINGLE.getName())).setValue(pneumatic);
+//      ((WsVictor) Core.getOutputManager().getOutput(WSOutputs.VICTOR.getName())).setValue(rightThrottle);
+//      ((WsTalon) Core.getOutputManager().getOutput(WSOutputs.TALON.getName())).setValue(leftThrottle);
+//      ((WsVictor) Core.getOutputManager().getOutput(WSOutputs.VICTOR_SP.getName())).setValue(manipulator);
+//      ((WsSolenoid) Core.getOutputManager().getOutput(WSOutputs.SINGLE.getName())).setValue(pneumatic);
 
    }
 
