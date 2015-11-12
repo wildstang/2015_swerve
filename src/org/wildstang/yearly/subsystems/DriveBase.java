@@ -17,6 +17,10 @@ public class DriveBase implements Subsystem
    double leftX;
    double leftY;
    double rightX;
+   double magnitude;
+   double rotMag;
+   double encodeAngle;
+   final double DEADBAND = 0.0;
 
    public DriveBase(String name)
    {
@@ -62,10 +66,28 @@ public class DriveBase implements Subsystem
    @Override
    public void update()
    {
-//      ((WsVictor) Core.getOutputManager().getOutput(WSOutputs.VICTOR.getName())).setValue(rightThrottle);
-//      ((WsTalon) Core.getOutputManager().getOutput(WSOutputs.TALON.getName())).setValue(leftThrottle);
-//      ((WsVictor) Core.getOutputManager().getOutput(WSOutputs.VICTOR_SP.getName())).setValue(manipulator);
-//      ((WsSolenoid) Core.getOutputManager().getOutput(WSOutputs.SINGLE.getName())).setValue(pneumatic);
+	 //magnitude - how powerful drive motors are running (-1 to 1)
+	   //rotMag - how powerful the rotational motors are running (-1 to 1)
+	   
+	   //leftX - driver Left Joystick X value (-1 to 1)
+	   //leftY - driver Left Joystick Y Value (-1 to 1)
+	   
+	   //encodeAngle - encoder angle readout (0 to 359.9)
+	   //DEADBAND - final double that will be the max disparity between desired angle and the actual angle of the swerve modules
+	   
+	   if (leftX == 0 && leftY == 0) { //if no controller input
+		   magnitude = 0;
+		   rotMag = 0;
+	   } else {
+		   double desiredAngle = getAngle(leftX, leftY);
+		   rotMag = getRotMag(encodeAngle, desiredAngle);
+		   double unscaledMagnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
+		   if (Math.abs(leftX) >= Math.abs(leftY)) { // This little algorithm should scale it by dividing the current raw magnitude by the maximum raw magnitude.
+			   magnitude = unscaledMagnitude * Math.sin(desiredAngle);
+		   } else {
+			   magnitude = unscaledMagnitude * Math.cos(desiredAngle);
+		   }
+	   }
 
    }
 
@@ -73,6 +95,63 @@ public class DriveBase implements Subsystem
    public String getName()
    {
       return "Drive Base";
+   }
+   
+   private double getRotMag(double actual, double desired) {
+	   double oppositeDesired = limitAngle(desired + 180); // get the opposite of the desired angle
+	   double rotateMag;
+	   double dummyDesired; //These dummy variables fix the cases where the desired angle is in between 270 and 359.9
+	   double dummyActual;
+	   if (desired >= 270 && (actual > 0 && actual < 90)) {
+		   dummyDesired = desired - 90;
+		   dummyActual = actual - 90;
+	   } else {
+		   dummyDesired = desired;
+		   dummyActual = actual;
+	   }
+	   if (actual >= desired - DEADBAND && actual <= desired + DEADBAND) {
+		   rotateMag = 0;
+	   } else if ((Math.abs(actual - desired) < Math.abs(actual - oppositeDesired)) && // if actual is closer to desired
+			   (limitAngle(dummyActual) > limitAngle(dummyDesired) && desired < 270.0)) { // and the actual is to the left of desired
+		   rotateMag = -1.0;
+	   } else {
+		   rotateMag = 1.0;
+	   }
+	   if (!(Math.abs(actual - desired) > Math.abs(actual - oppositeDesired))) { //going to the opposite of desired angle (run motors in reverse)
+		   magnitude *= -1;
+	   }
+	   return rotateMag;
+   }
+   
+   private double getAngle(double x, double y) {
+	   double angle = 0;
+	   if (x >= 0 && y > 0) {
+		   angle = limitAngle(Math.atan(x/y));
+	   } else if(x >= 0 && y < 0) {
+		   angle = 180 - limitAngle(Math.atan(x/y) );
+	   } else if(x <= 0 && y < 0){
+		   angle = 180 + limitAngle(Math.atan(x/y));
+	   } else if(x <= 0 && y > 0){
+		   angle = 360 - limitAngle(Math.atan(x/y));
+   	   } else if( y == 0 && x >= 0){
+   		   angle = 90;
+   	   } else {
+   		   angle = 270;
+   	   }
+
+	   return angle;
+   }
+   
+   private double limitAngle(double oldAngle) {
+	   double newAngle = oldAngle;
+	   while(newAngle >= 360) {
+		   newAngle -= 360;
+	   }
+	   while(newAngle < 0) {
+		   newAngle += 360;
+	   }
+	   
+	   return newAngle;
    }
 
 }
