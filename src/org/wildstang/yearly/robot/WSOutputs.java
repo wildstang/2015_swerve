@@ -66,10 +66,5 @@ public enum WSOutputs implements Outputs
    }
 
 
-@Override
-public Object getDefault() {
-	// TODO Auto-generated method stub
-	return null;
-}
 
 }

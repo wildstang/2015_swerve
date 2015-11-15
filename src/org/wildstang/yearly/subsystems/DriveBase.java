@@ -21,8 +21,8 @@ public class DriveBase implements Subsystem
    double rotMag;
    double encodeAngle;
    final double DEADBAND = 0.0;
-
-   public DriveBase(String name)
+  /* Constructor should not take args to insure that it can be instantiated via reflection. */
+   public DriveBase()
    {
 
    }

@@ -4,15 +4,7 @@ import org.wildstang.framework.core.Core;
 import org.wildstang.framework.io.Input;
 import org.wildstang.framework.io.inputs.AnalogInput;
 import org.wildstang.framework.io.inputs.DigitalInput;
-import org.wildstang.framework.io.outputs.DiscreteOutput;
 import org.wildstang.framework.subsystems.Subsystem;
-import org.wildstang.hardware.crio.outputs.WsDoubleSolenoid;
-import org.wildstang.hardware.crio.outputs.WsDoubleSolenoidState;
-import org.wildstang.hardware.crio.outputs.WsRelay;
-import org.wildstang.hardware.crio.outputs.WsRelayState;
-import org.wildstang.hardware.crio.outputs.WsSolenoid;
-import org.wildstang.hardware.crio.outputs.WsTalon;
-import org.wildstang.hardware.crio.outputs.WsVictor;
 import org.wildstang.yearly.robot.WSInputs;
 import org.wildstang.yearly.robot.WSOutputs;
 
@@ -27,10 +19,10 @@ public class HardwareTest implements Subsystem
    boolean b2, b3, b4;
    
    private int m_cycleCount = 0;
-   
-   public HardwareTest(String p_name)
+   /* Constructor should not take args to insure that it can be instantiated via reflection. */
+   public HardwareTest()
    {
-      m_name = p_name;
+      m_name = "Hardware Test";
    }
    
    @Override

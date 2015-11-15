@@ -101,10 +101,5 @@ public enum WSInputs implements Inputs
    }
 
 
-@Override
-public Object getDefault() {
-	// TODO Auto-generated method stub
-	return null;
-}
 
 }

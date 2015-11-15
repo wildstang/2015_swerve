@@ -159,23 +159,7 @@ public class RobotTemplate extends IterativeRobot
 
       // TODO
       // 1. Add subsystems
-//      Subsystem s = new DriveBase(WSSubsystems.DRIVE_BASE.getName());
-//      Core.getSubsystemManager().addSubsystem(s);
-      
-      Subsystem s = new Monitor(WSSubsystems.MONITOR.getName());
-      s.init();
-      Core.getSubsystemManager().addSubsystem(s);
-      
-//      s = new HardwareTest(WSSubsystems.HARDWARE_TEST.getName());
-//      s.init();
-//      Core.getSubsystemManager().addSubsystem(s);
-      
-      s = new DriveBase(WSSubsystems.DRIVE_BASE.getName());
-      s.init();
-      Core.getSubsystemManager().addSubsystem(s);
-      
-//      s = new LED(WSSubsystems.LED.getName());
-//      Core.getSubsystemManager().addSubsystem(s);
+      m_core.createSubsystems(WSSubsystems.values());
 
       // 2. Add Auto programs
 
