@@ -59,6 +59,7 @@ public enum WSInputs implements Inputs
    HALL_EFFECT("Lift hall effect sensors", WSInputType.HALL_EFFECT, new WsI2CInputConfig(Port.kMXP, 0x10), true),
 //   LIMIT_SWITCH("Limit switch", WSInputType.SWITCH, 0, true),
    POT("Pot", WSInputType.POT, new WsAnalogInputConfig(0), true);
+//   ENCODER("Encoder", WSInputType.ENCODER, new WsAnalogInputConfig(0), true);
    
 
    private final String m_name;
@@ -99,7 +100,6 @@ public enum WSInputs implements Inputs
    {
       return m_trackingState;
    }
-
 
 
 }

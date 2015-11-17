@@ -6,8 +6,8 @@ import org.wildstang.framework.core.Subsystems;
 public enum WSSubsystems implements Subsystems
 {
    DRIVE_BASE("Drive base", DriveBase.class),
-   HARDWARE_TEST("Hardware test", HardwareTest.class),
-   LED("LED", LED.class),
+//   HARDWARE_TEST("Hardware test", HardwareTest.class),
+//   LED("LED", LED.class),
    MONITOR("Monitor", Monitor.class);
 
    private String m_name;

@@ -12,6 +12,8 @@ import org.wildstang.hardware.crio.outputs.WsVictor;
 import org.wildstang.yearly.robot.WSInputs;
 import org.wildstang.yearly.robot.WSOutputs;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class DriveBase implements Subsystem
 {
    double leftX;
@@ -43,6 +45,10 @@ public class DriveBase implements Subsystem
       {
          rightX = ((AnalogInput) source).getValue();
       }
+//      if (source.getName().equals(WSInputs.ENCODER.getName()))
+//      {
+//         encodeAngle = ((AnalogInput)source).getValue();
+//      }
       
 
    }
@@ -87,6 +93,17 @@ public class DriveBase implements Subsystem
 		   } else {
 			   magnitude = unscaledMagnitude * Math.cos(desiredAngle);
 		   }
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URR.getName())).setValue(rotMag);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULR.getName())).setValue(rotMag);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRR.getName())).setValue(rotMag);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLR.getName())).setValue(rotMag);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URD.getName())).setValue(magnitude);
+//		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULD.getName())).setValue(magnitude);
+		   ((WsTalon)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULD.getName())).setValue(magnitude);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRD.getName())).setValue(magnitude);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLD.getName())).setValue(magnitude);
+		   SmartDashboard.putNumber("Magnitude", magnitude);
+		   
 	   }
 
    }

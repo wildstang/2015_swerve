@@ -15,8 +15,8 @@ import org.wildstang.hardware.crio.outputs.config.WsVictorConfig;
 public enum WSOutputs implements Outputs
 {
    VICTOR_URD("Victor SP",          WSOutputType.VICTOR,    new WsVictorConfig(0, 0.0), true),
-//   TALON("Talon",            WSOutputType.TALON,     new WsTalonConfig(1,  0.0), true),
-   VICTOR_ULD("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(1,  0.0), true),
+   VICTOR_ULD("Talon",            WSOutputType.TALON,     new WsTalonConfig(1,  0.0), true),
+//   VICTOR_ULD("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(1,  0.0), true),
 //   SPIKE("Spike",            WSOutputType.RELAY,     new WsRelayConfig(3, WsRelayState.RELAY_ON), true),
    VICTOR_URR("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(2,  0.0), true),
    VICTOR_ULR("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(3,  0.0), true),
@@ -64,7 +64,5 @@ public enum WSOutputs implements Outputs
    {
       return m_trackingState;
    }
-
-
 
 }
