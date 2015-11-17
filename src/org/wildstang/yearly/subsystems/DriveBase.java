@@ -103,6 +103,7 @@ public class DriveBase implements Subsystem
 		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRD.getName())).setValue(magnitude);
 		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLD.getName())).setValue(magnitude);
 		   SmartDashboard.putNumber("Magnitude", magnitude);
+		   SmartDashboard.putNumber("Desired angle", desiredAngle);
 		   
 	   }
 
