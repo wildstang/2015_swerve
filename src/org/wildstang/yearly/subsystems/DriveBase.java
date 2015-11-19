@@ -146,15 +146,15 @@ public class DriveBase implements Subsystem
 	   if (x >= 0 && y > 0) {
 		   angle = limitAngle(Math.atan(x/y));
 	   } else if(x >= 0 && y < 0) {
-		   angle = 180 - limitAngle(Math.atan(x/y) );
+		   angle = Math.PI - limitAngle(Math.atan(x/y) );
 	   } else if(x <= 0 && y < 0){
-		   angle = 180 + limitAngle(Math.atan(x/y));
+		   angle = Math.PI + limitAngle(Math.atan(x/y));
 	   } else if(x <= 0 && y > 0){
-		   angle = 360 - limitAngle(Math.atan(x/y));
+		   angle = 2*(Math.PI) - limitAngle(Math.atan(x/y));
    	   } else if( y == 0 && x >= 0){
-   		   angle = 90;
+   		   angle = (Math.PI/2);
    	   } else {
-   		   angle = 270;
+   		   angle = (Math.PI * 1.5);
    	   }
 
 	   return angle;
