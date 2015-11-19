@@ -160,13 +160,13 @@ public class DriveBase implements Subsystem
 	   return angle;
    }
    
-   private double limitAngle(double oldAngle) {
+   private static double limitAngle(double oldAngle) {
 	   double newAngle = oldAngle;
-	   while(newAngle >= 360) {
-		   newAngle -= 360;
+	   while(newAngle >= (2*Math.PI)) {
+		   newAngle -= (2*Math.PI);
 	   }
 	   while(newAngle < 0) {
-		   newAngle += 360;
+		   newAngle += (2*Math.PI);
 	   }
 	   
 	   return newAngle;
