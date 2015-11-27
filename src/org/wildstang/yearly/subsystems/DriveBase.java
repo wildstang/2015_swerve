@@ -81,7 +81,7 @@ public class DriveBase implements Subsystem
 	   //encodeAngle - encoder angle readout (0 to 359.9)
 	   //DEADBAND - final double that will be the max disparity between desired angle and the actual angle of the swerve modules
 	   
-	   if (leftX == 0 && leftY == 0) { //if no controller input
+	   if (leftX == 0 && leftY == 0 && rightX == 0) { //if no controller input
 		   magnitude = 0;
 		   rotMag = 0;
 	   } else {
@@ -89,22 +89,35 @@ public class DriveBase implements Subsystem
 		   rotMag = getRotMag(encodeAngle, desiredAngle);
 		   double unscaledMagnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
 		   if (Math.abs(leftX) >= Math.abs(leftY)) { // This little algorithm should scale it by dividing the current raw magnitude by the maximum raw magnitude.
-			   magnitude = unscaledMagnitude * Math.sin(desiredAngle);
+			   magnitude = unscaledMagnitude * (Math.sin(desiredAngle) / Math.abs(Math.sin(desiredAngle)));
+			   if ((leftY > 0 && leftX < 0) || (leftY < 0 && leftX > 0)) {
+				   magnitude *= -1;
+			   }
 		   } else {
-			   magnitude = unscaledMagnitude * Math.cos(desiredAngle);
+			   magnitude = unscaledMagnitude * (Math.cos(desiredAngle) / Math.abs(Math.cos(desiredAngle)));
 		   }
+		   
+		   
+		   
+		   double leftMag = adjustMagnitude(magnitude, rightX, true);
+		   double rightMag = adjustMagnitude(magnitude, rightX, false);
+		   
+		   
 		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URR.getName())).setValue(rotMag);
 		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULR.getName())).setValue(rotMag);
 		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRR.getName())).setValue(rotMag);
 		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLR.getName())).setValue(rotMag);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URD.getName())).setValue(magnitude);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URD.getName())).setValue(rightMag);
 //		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULD.getName())).setValue(magnitude);
-		   ((WsTalon)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULD.getName())).setValue(magnitude);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRD.getName())).setValue(magnitude);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLD.getName())).setValue(magnitude);
+		   ((WsTalon)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULD.getName())).setValue(leftMag);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRD.getName())).setValue(rightMag);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLD.getName())).setValue(leftMag);
 		   SmartDashboard.putNumber("Magnitude", magnitude);
+		   SmartDashboard.putNumber("Left Mag", leftMag);
+		   SmartDashboard.putNumber("Right Mag", rightMag);
 		   SmartDashboard.putNumber("Desired angle", desiredAngle);
-		   
+		   SmartDashboard.putNumber("Left X", leftX);
+		   SmartDashboard.putNumber("Left Y", leftY);
 	   }
 
    }
@@ -113,6 +126,24 @@ public class DriveBase implements Subsystem
    public String getName()
    {
       return "Drive Base";
+   }
+   
+   private double adjustMagnitude(double original, double rotation, boolean isLeft) {
+	   if (isLeft) {
+		   return limitMotor(original + rotation);
+	   } else {
+		   return limitMotor(original - rotation);
+	   }
+   }
+   
+   private double limitMotor(double magnitude) {
+	   if (magnitude > 1) {
+		   return 1d;
+	   } else if (magnitude < -1){
+		   return -1d;
+	   } else {
+		  return magnitude;
+	   }
    }
    
    private double getRotMag(double actual, double desired) {
