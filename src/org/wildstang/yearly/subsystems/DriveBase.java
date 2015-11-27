@@ -141,23 +141,25 @@ public class DriveBase implements Subsystem
 	   return rotateMag;
    }
    
-	  private static double getAngle(double x, double y) {
-		   double angle = 0;
-		   if (y > 0) {
-			   angle = limitAngle(Math.atan(x/y));
-		   } 
-          else if(y < 0) {
-			   angle = limitAngle(Math.PI + Math.atan(x/y));
-		   } 
-		   else if( y == 0 && x >= 0){
-	   		   angle = (Math.PI/2);
-	   	   } 
-		   else {
-	   		   angle = (Math.PI * 1.5);
-	   	   }
+   private static double getAngle(double x, double y) {
+	   double angle = 0;
+	   if (y > 0) {
+		   angle = limitAngle(Math.atan(x/y));
+	   } else if(x >= 0 && y < 0) {
+		   angle = Math.PI - limitAngle(Math.atan(x/y) );
+	   } else if(x <= 0 && y < 0){
+		   angle = Math.PI + limitAngle(Math.atan(x/y));
+	   } 
+   	    else if( y == 0 && x >= 0){
+   		   angle = (Math.PI/2);
+   	   } else {
+   		   angle = (Math.PI * 1.5);
+   	   }
 
-		   return angle;
-	   }
+	   return angle;
+   }
+   
+   
    
    private static double limitAngle(double oldAngle) {
 	   double newAngle = oldAngle;
