@@ -10,7 +10,7 @@ import org.wildstang.framework.io.InputManager;
 import org.wildstang.framework.io.inputs.AnalogInput;
 import org.wildstang.yearly.robot.WSInputs;
 import org.wildstang.yearly.robot.WSSubsystems;
-import org.wildstang.yearly.subsystems.DriveBase;
+import org.wildstang.yearly.subsystems.SixWheelDriveBase;
 
 /**
  *

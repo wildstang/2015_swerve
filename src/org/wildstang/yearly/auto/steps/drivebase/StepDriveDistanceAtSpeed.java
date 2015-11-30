@@ -3,7 +3,7 @@ package org.wildstang.yearly.auto.steps.drivebase;
 import org.wildstang.framework.auto.steps.AutoStep;
 import org.wildstang.framework.core.Core;
 import org.wildstang.yearly.robot.WSSubsystems;
-import org.wildstang.yearly.subsystems.DriveBase;
+import org.wildstang.yearly.subsystems.SixWheelDriveBase;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -21,7 +21,7 @@ public class StepDriveDistanceAtSpeed extends AutoStep
    private long timeWhenTargetReached;
    private boolean shouldHardStop;
 
-   private DriveBase driveBase;
+   private SixWheelDriveBase driveBase;
 
    public StepDriveDistanceAtSpeed(double distanceInInches, double speed,
          boolean shouldHardStop)
@@ -37,7 +37,7 @@ public class StepDriveDistanceAtSpeed extends AutoStep
    @Override
    public void initialize()
    {
-      driveBase = ((DriveBase) Core.getSubsystemManager().getSubsystem(WSSubsystems.DRIVE_BASE.getName()));
+      driveBase = ((SixWheelDriveBase) Core.getSubsystemManager().getSubsystem(WSSubsystems.SIX_WHEEL_DRIVE_BASE.getName()));
 //      driveBase.resetLeftEncoder();
 //      driveBase.resetRightEncoder();
       if (distance < 0)

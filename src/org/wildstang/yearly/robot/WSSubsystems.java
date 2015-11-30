@@ -1,14 +1,14 @@
 package org.wildstang.yearly.robot;
 
 import org.wildstang.framework.core.Subsystems;
-import org.wildstang.yearly.subsystems.DriveBase;
+import org.wildstang.yearly.subsystems.SixWheelDriveBase;
 import org.wildstang.yearly.subsystems.HardwareTest;
 import org.wildstang.yearly.subsystems.LED;
 import org.wildstang.yearly.subsystems.Monitor;
 
 public enum WSSubsystems implements Subsystems
 {
-   DRIVE_BASE("Drive base", DriveBase.class),
+   SIX_WHEEL_DRIVE_BASE("Six Wheel Drive base", SixWheelDriveBase.class),
    HARDWARE_TEST("Hardware test", HardwareTest.class),
    LED("LED", LED.class),
    MONITOR("Monitor", Monitor.class);

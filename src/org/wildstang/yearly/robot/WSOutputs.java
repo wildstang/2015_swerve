@@ -14,9 +14,13 @@ import org.wildstang.hardware.crio.outputs.config.WsVictorConfig;
 
 public enum WSOutputs implements Outputs
 {
-   VICTOR("Victor",          WSOutputType.VICTOR,    new WsVictorConfig(0, 0.0), true),
-   TALON("Talon",            WSOutputType.TALON,     new WsTalonConfig(1,  0.0), true),
-   VICTOR_SP("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(2,  0.0), true),
+   VICTOR_1_LEFT("Victor 1 Left",          WSOutputType.VICTOR,    new WsVictorConfig(0, 0.0), true),
+   VICTOR_2_LEFT("Victor 2 Left",          WSOutputType.VICTOR,    new WsVictorConfig(1, 0.0), true),
+   VICTOR_1_RIGHT("Victor 1 Right",          WSOutputType.VICTOR,    new WsVictorConfig(2, 0.0), true),
+   VICTOR_2_RIGHT("Victor 2 Right",          WSOutputType.VICTOR,    new WsVictorConfig(3, 0.0), true),
+   
+   TALON("Talon",            WSOutputType.TALON,     new WsTalonConfig(4,  0.0), true),
+   //VICTOR_SP("Victor SP",    WSOutputType.VICTOR,    new WsVictorConfig(5,  0.0), true),
    SPIKE("Spike",            WSOutputType.RELAY,     new WsRelayConfig(3, WsRelayState.RELAY_ON), true),
 
    // Solenoids
