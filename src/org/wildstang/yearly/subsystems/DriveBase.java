@@ -23,6 +23,7 @@ public class DriveBase implements Subsystem
    double rotMag;
    double encodeAngle;
    final double DEADBAND = 0.0;
+   boolean isOpposite;
   /* Constructor should not take args to insure that it can be instantiated via reflection. */
    public DriveBase()
    {
@@ -88,15 +89,12 @@ public class DriveBase implements Subsystem
 		   double desiredAngle = getAngle(leftX, leftY);
 		   rotMag = getRotMag(encodeAngle, desiredAngle);
 		   double unscaledMagnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
-		   if (Math.abs(leftX) >= Math.abs(leftY)) { // This little algorithm should scale it by dividing the current raw magnitude by the maximum raw magnitude.
-			   magnitude = unscaledMagnitude * (Math.sin(desiredAngle) / Math.abs(Math.sin(desiredAngle)));
-			   if ((leftY > 0 && leftX < 0) || (leftY < 0 && leftX > 0)) {
-				   magnitude *= -1;
-			   }
+		   if (getAngleDistance(encodeAngle, desiredAngle) > Math.PI) {
+			   isOpposite = true;
+			   magnitude *= -1;
 		   } else {
-			   magnitude = unscaledMagnitude * (Math.cos(desiredAngle) / Math.abs(Math.cos(desiredAngle)));
+			   isOpposite = false;
 		   }
-		   
 		   
 		   
 		   double leftMag = adjustMagnitude(magnitude, rightX, true);
@@ -147,28 +145,22 @@ public class DriveBase implements Subsystem
    }
    
    private double getRotMag(double actual, double desired) {
-	   double oppositeDesired = limitAngle(desired + 180); // get the opposite of the desired angle
 	   double rotateMag;
-	   double dummyDesired; //These dummy variables fix the cases where the desired angle is in between 270 and 359.9
-	   double dummyActual;
-	   if (desired >= 270 && (actual > 0 && actual < 90)) {
-		   dummyDesired = desired - 90;
-		   dummyActual = actual - 90;
+	   double oppositeDesired = limitAngle(180 + desired);
+	   if (isOpposite) {
+		   if (getAbsAngleDistance(oppositeDesired, actual) < 0) {
+			   rotateMag = 1d;
+		   } else {
+			   rotateMag = -1d;
+		   }
 	   } else {
-		   dummyDesired = desired;
-		   dummyActual = actual;
+		   if (getAbsAngleDistance(desired, actual) < 0) {
+			   rotateMag = 1d;
+		   } else {
+			   rotateMag = -1d;
+		   }
 	   }
-	   if (actual >= desired - DEADBAND && actual <= desired + DEADBAND) {
-		   rotateMag = 0;
-	   } else if ((Math.abs(actual - desired) < Math.abs(actual - oppositeDesired)) && // if actual is closer to desired
-			   (limitAngle(dummyActual) > limitAngle(dummyDesired) && desired < 270.0)) { // and the actual is to the left of desired
-		   rotateMag = -1.0;
-	   } else {
-		   rotateMag = 1.0;
-	   }
-	   if (!(Math.abs(actual - desired) > Math.abs(actual - oppositeDesired))) { //going to the opposite of desired angle (run motors in reverse)
-		   magnitude *= -1;
-	   }
+	   
 	   return rotateMag;
    }
    
@@ -200,6 +192,18 @@ public class DriveBase implements Subsystem
 	   }
 	   
 	   return newAngle;
+   }
+   
+   private static double getAbsAngleDistance(double finalAngle, double initialAngle) {
+	   return 0.0;
+   }
+   
+   private static double getAngleDistance(double angle1, double angle2) {
+	   double diff = Math.abs(angle1 - angle2);
+	   if (diff > 180) {
+		   diff = 360 - diff;
+	   }
+	   return diff;
    }
 
 }
