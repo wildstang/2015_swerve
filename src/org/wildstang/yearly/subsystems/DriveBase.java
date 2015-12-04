@@ -23,6 +23,7 @@ public class DriveBase implements Subsystem
    double rotMag;
    double encodeAngle;
    final double DEADBAND = 0.0;
+   boolean isOpposite;
   /* Constructor should not take args to insure that it can be instantiated via reflection. */
    public DriveBase()
    {
@@ -81,30 +82,40 @@ public class DriveBase implements Subsystem
 	   //encodeAngle - encoder angle readout (0 to 359.9)
 	   //DEADBAND - final double that will be the max disparity between desired angle and the actual angle of the swerve modules
 	   
-	   if (leftX == 0 && leftY == 0) { //if no controller input
+	   if (leftX == 0 && leftY == 0 && rightX == 0) { //if no controller input
 		   magnitude = 0;
 		   rotMag = 0;
 	   } else {
 		   double desiredAngle = getAngle(leftX, leftY);
 		   rotMag = getRotMag(encodeAngle, desiredAngle);
 		   double unscaledMagnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
-		   if (Math.abs(leftX) >= Math.abs(leftY)) { // This little algorithm should scale it by dividing the current raw magnitude by the maximum raw magnitude.
-			   magnitude = unscaledMagnitude * Math.sin(desiredAngle);
+		   if (getAngleDistance(encodeAngle, desiredAngle) > Math.PI) {
+			   isOpposite = true;
+			   magnitude *= -1;
 		   } else {
-			   magnitude = unscaledMagnitude * Math.cos(desiredAngle);
+			   isOpposite = false;
 		   }
+		   
+		   
+		   double leftMag = adjustMagnitude(magnitude, rightX, true);
+		   double rightMag = adjustMagnitude(magnitude, rightX, false);
+		   
+		   
 		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URR.getName())).setValue(rotMag);
 		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULR.getName())).setValue(rotMag);
 		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRR.getName())).setValue(rotMag);
 		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLR.getName())).setValue(rotMag);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URD.getName())).setValue(magnitude);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URD.getName())).setValue(rightMag);
 //		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULD.getName())).setValue(magnitude);
-		   ((WsTalon)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULD.getName())).setValue(magnitude);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRD.getName())).setValue(magnitude);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLD.getName())).setValue(magnitude);
+		   ((WsTalon)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULD.getName())).setValue(leftMag);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRD.getName())).setValue(rightMag);
+		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLD.getName())).setValue(leftMag);
 		   SmartDashboard.putNumber("Magnitude", magnitude);
+		   SmartDashboard.putNumber("Left Mag", leftMag);
+		   SmartDashboard.putNumber("Right Mag", rightMag);
 		   SmartDashboard.putNumber("Desired angle", desiredAngle);
-		   
+		   SmartDashboard.putNumber("Left X", leftX);
+		   SmartDashboard.putNumber("Left Y", leftY);
 	   }
 
    }
@@ -115,29 +126,41 @@ public class DriveBase implements Subsystem
       return "Drive Base";
    }
    
+   private double adjustMagnitude(double original, double rotation, boolean isLeft) {
+	   if (isLeft) {
+		   return limitMotor(original + rotation);
+	   } else {
+		   return limitMotor(original - rotation);
+	   }
+   }
+   
+   private double limitMotor(double magnitude) {
+	   if (magnitude > 1) {
+		   return 1d;
+	   } else if (magnitude < -1){
+		   return -1d;
+	   } else {
+		  return magnitude;
+	   }
+   }
+   
    private double getRotMag(double actual, double desired) {
-	   double oppositeDesired = limitAngle(desired + 180); // get the opposite of the desired angle
 	   double rotateMag;
-	   double dummyDesired; //These dummy variables fix the cases where the desired angle is in between 270 and 359.9
-	   double dummyActual;
-	   if (desired >= 270 && (actual > 0 && actual < 90)) {
-		   dummyDesired = desired - 90;
-		   dummyActual = actual - 90;
+	   double oppositeDesired = limitAngle(180 + desired);
+	   if (isOpposite) {
+		   if (getAbsAngleDistance(oppositeDesired, actual) < 0) {
+			   rotateMag = 1d;
+		   } else {
+			   rotateMag = -1d;
+		   }
 	   } else {
-		   dummyDesired = desired;
-		   dummyActual = actual;
+		   if (getAbsAngleDistance(desired, actual) < 0) {
+			   rotateMag = 1d;
+		   } else {
+			   rotateMag = -1d;
+		   }
 	   }
-	   if (actual >= desired - DEADBAND && actual <= desired + DEADBAND) {
-		   rotateMag = 0;
-	   } else if ((Math.abs(actual - desired) < Math.abs(actual - oppositeDesired)) && // if actual is closer to desired
-			   (limitAngle(dummyActual) > limitAngle(dummyDesired) && desired < 270.0)) { // and the actual is to the left of desired
-		   rotateMag = -1.0;
-	   } else {
-		   rotateMag = 1.0;
-	   }
-	   if (!(Math.abs(actual - desired) > Math.abs(actual - oppositeDesired))) { //going to the opposite of desired angle (run motors in reverse)
-		   magnitude *= -1;
-	   }
+	   
 	   return rotateMag;
    }
    
@@ -171,6 +194,32 @@ public class DriveBase implements Subsystem
 	   }
 	   
 	   return newAngle;
+   }
+   
+   private static double getAbsAngleDistance(double finalAngle, double initialAngle) {
+	   double diff = getAngleDistance(finalAngle, initialAngle);
+		   if (finalAngle < 270) {
+			   if (initialAngle > finalAngle) {
+				   diff *= -1;
+			   }
+		   } else {
+			   double oppositeFinal = finalAngle - 180;
+			   if (initialAngle > finalAngle || initialAngle < oppositeFinal) {
+				   diff *= -1;
+			   }
+		   }
+	   
+	   
+	   
+	   return diff;
+   }
+   
+   private static double getAngleDistance(double angle1, double angle2) {
+	   double diff = Math.abs(angle1 - angle2);
+	   if (diff > Math.PI) {
+		   diff = (Math.PI * 2) - diff;
+	   }
+	   return diff;
    }
 
 }
