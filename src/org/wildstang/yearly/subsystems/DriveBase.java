@@ -197,13 +197,27 @@ public class DriveBase implements Subsystem
    }
    
    private static double getAbsAngleDistance(double finalAngle, double initialAngle) {
-	   return 0.0;
+	   double diff = getAngleDistance(finalAngle, initialAngle);
+		   if (finalAngle < 270) {
+			   if (initialAngle > finalAngle) {
+				   diff *= -1;
+			   }
+		   } else {
+			   double oppositeFinal = finalAngle - 180;
+			   if (initialAngle > finalAngle || initialAngle < oppositeFinal) {
+				   diff *= -1;
+			   }
+		   }
+	   
+	   
+	   
+	   return diff;
    }
    
    private static double getAngleDistance(double angle1, double angle2) {
 	   double diff = Math.abs(angle1 - angle2);
-	   if (diff > 180) {
-		   diff = 360 - diff;
+	   if (diff > Math.PI) {
+		   diff = (Math.PI * 2) - diff;
 	   }
 	   return diff;
    }
