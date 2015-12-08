@@ -141,9 +141,9 @@ public class DriveBase implements Subsystem
    
    private double adjustMagnitude(double original, double rotation, boolean isLeft) {
 	   if (isLeft) {
-		   return limitMotor(original + rotation);
+		   return limitMotor(original + (Math.abs(original) * rotation));
 	   } else {
-		   return limitMotor(original - rotation);
+		   return limitMotor(original - (Math.abs(original) * rotation));
 	   }
    }
    
