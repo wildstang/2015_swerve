@@ -26,7 +26,7 @@ public class DriveBase implements Subsystem
    double rightMag;
    double desiredAngle;
    final double DEADBAND = (Math.PI / 180);
-   final double joystickDeadband = .05;
+   final double JOYSTICKDEADBAND = .02;
    boolean isOpposite;
    double potVal;
   /* Constructor should not take args to insure that it can be instantiated via reflection. */
@@ -93,9 +93,9 @@ public class DriveBase implements Subsystem
 	   //encodeAngle - encoder angle readout (0 to 359.9)
 	   //DEADBAND - final double that will be the max disparity between desired angle and the actual angle of the swerve modules
 	   
-	   if(Math.abs(leftX) < joystickDeadband) leftX = 0;
-	   if(Math.abs(leftY) < joystickDeadband) leftY = 0;
-	   if(Math.abs(rightX) < joystickDeadband) rightX = 0;
+	   if(Math.abs(leftX) < JOYSTICKDEADBAND) leftX = 0;
+	   if(Math.abs(leftY) < JOYSTICKDEADBAND) leftY = 0;
+	   if(Math.abs(rightX) < JOYSTICKDEADBAND) rightX = 0;
 	   
 	   if (leftX == 0 && leftY == 0 && rightX == 0) { //if no controller input
 		   magnitude = 0;
@@ -110,6 +110,14 @@ public class DriveBase implements Subsystem
 			   isOpposite = false;
 		   }
 		   rotMag = getRotMag(encodeAngle, desiredAngle);
+		   
+		   if(Math.abs(magnitude) < .25)
+		   {
+			   boolean isPositive = true;
+			   if(magnitude < 0) isPositive = false;
+			   magnitude = Math.pow(magnitude, 2) * 4;
+			   if(!isPositive) magnitude *= -1;
+		   }
 		   
 		   leftMag = adjustMagnitude(magnitude, -rightX, true);
 		   rightMag = adjustMagnitude(magnitude, -rightX, false);
