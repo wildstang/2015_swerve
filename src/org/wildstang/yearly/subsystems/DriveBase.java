@@ -25,7 +25,8 @@ public class DriveBase implements Subsystem
    double leftMag;
    double rightMag;
    double desiredAngle;
-   final double DEADBAND = 0.0;
+   final double DEADBAND = (Math.PI / 180);
+   final double joystickDeadband = .05;
    boolean isOpposite;
    double potVal;
   /* Constructor should not take args to insure that it can be instantiated via reflection. */
@@ -91,6 +92,10 @@ public class DriveBase implements Subsystem
 	   
 	   //encodeAngle - encoder angle readout (0 to 359.9)
 	   //DEADBAND - final double that will be the max disparity between desired angle and the actual angle of the swerve modules
+	   
+	   if(Math.abs(leftX) < joystickDeadband) leftX = 0;
+	   if(Math.abs(leftY) < joystickDeadband) leftY = 0;
+	   if(Math.abs(rightX) < joystickDeadband) rightX = 0;
 	   
 	   if (leftX == 0 && leftY == 0 && rightX == 0) { //if no controller input
 		   magnitude = 0;
@@ -174,6 +179,15 @@ public class DriveBase implements Subsystem
 		   }
 	   }
 	   
+	   if(getAngleDistance(desired, actual) < (Math.PI/9))
+	   {
+		   //Deadband = 1 degree
+		   rotateMag *= (getAngleDistance(desired, actual) / (Math.PI/9));
+		   if(getAngleDistance(desired, actual) < DEADBAND)
+		   {
+			   return 0;
+		   }
+	   }
 	   return rotateMag;
    }
    
