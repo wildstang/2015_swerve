@@ -21,7 +21,7 @@ public class DriveBase implements Subsystem
    double rightX;
    boolean button9, button10;
    double magnitude;
-   double rotMag;
+   double rotMagUR, rotMagUL, rotMagLR, rotMagLL;
    double encodeAngleUR, encodeAngleUL, encodeAngleLR, encodeAngleLL;
    double leftMag;
    double rightMag;
@@ -160,7 +160,10 @@ public class DriveBase implements Subsystem
 	   
 	   if (leftX == 0 && leftY == 0 && rightX == 0) { //if no controller input
 		   magnitude = 0;
-		   rotMag = 0;
+		   rotMagUR = 0;
+		   rotMagUL = 0;
+		   rotMagLR = 0;
+		   rotMagLL = 0;
 	   } else {
 		   desiredAngle = Math.abs(getAngle(leftX, leftY));
 		   magnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
@@ -170,7 +173,10 @@ public class DriveBase implements Subsystem
 		   } else {
 			   isOpposite = false;
 		   }
-		   rotMag = getRotMag(encodeAngleUR, desiredAngle);
+		   rotMagUR = getRotMag(encodeAngleUR, desiredAngle);
+		   rotMagUL = getRotMag(encodeAngleUL, desiredAngle);
+		   rotMagLR = getRotMag(encodeAngleLR, desiredAngle);
+		   rotMagLL = getRotMag(encodeAngleLL, desiredAngle);
 		   
 		   if(Math.abs(magnitude) < .25)
 		   {
@@ -185,12 +191,12 @@ public class DriveBase implements Subsystem
 		   
 		   VictorURD.setValue(rightMag);
 		   VictorULD.setValue(leftMag);
-		   VictorURR.setValue(rotMag);
-		   VictorULR.setValue(rotMag);
+		   VictorURR.setValue(rotMagUR);
+		   VictorULR.setValue(rotMagUL);
 		   VictorLRD.setValue(rightMag);
 		   VictorLLD.setValue(leftMag);
-		   VictorLRR.setValue(rotMag);
-		   VictorLLR.setValue(rotMag);
+		   VictorLRR.setValue(rotMagLR);
+		   VictorLLR.setValue(rotMagLL);
 	   }
 	   SmartDashboard.putNumber("Magnitude", magnitude);
 	   SmartDashboard.putNumber("Left Mag", leftMag);
@@ -199,7 +205,7 @@ public class DriveBase implements Subsystem
 	   SmartDashboard.putNumber("Left X", leftX);
 	   SmartDashboard.putNumber("Left Y", leftY);
 	   SmartDashboard.putNumber("encoder", encodeAngleUR);
-	   SmartDashboard.putNumber("rotMag", rotMag);
+	   SmartDashboard.putNumber("rotMagUR", rotMagUR);
    }
 
    @Override
