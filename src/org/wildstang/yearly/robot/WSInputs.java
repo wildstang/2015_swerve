@@ -6,6 +6,7 @@ import org.wildstang.framework.io.inputs.InputType;
 import org.wildstang.hardware.JoystickConstants;
 import org.wildstang.hardware.crio.inputs.WSInputType;
 import org.wildstang.hardware.crio.inputs.config.WsAnalogInputConfig;
+import org.wildstang.hardware.crio.inputs.config.WsDigitalInputConfig;
 import org.wildstang.hardware.crio.inputs.config.WsI2CInputConfig;
 import org.wildstang.hardware.crio.inputs.config.WsJSButtonInputConfig;
 import org.wildstang.hardware.crio.inputs.config.WsJSJoystickInputConfig;
@@ -32,8 +33,8 @@ public enum WSInputs implements Inputs
 //   DRV_BUTTON_6("Driver button 6", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(0, 5), true),
 //   DRV_BUTTON_7("Driver button 7", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(0, 6), true),
 //   DRV_BUTTON_8("Driver button 8", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(0, 7), true),
-//   DRV_BUTTON_9("Driver button 9", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(0, 8), true),
-//   DRV_BUTTON_10("Driver button 10", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(0, 9), true),
+   DRV_BUTTON_9("Driver button 9", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(0, 8), true),
+   DRV_BUTTON_10("Driver button 10", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(0, 9), true),
 //   DRV_BUTTON_11("Driver button 11", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(0, 10), true),
 //   DRV_BUTTON_12("Driver button 12", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(0, 11), true),
 
@@ -56,10 +57,16 @@ public enum WSInputs implements Inputs
 //   MAN_BUTTON_11("Manipulator button 11", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(1, 10), true),
 //   MAN_BUTTON_12("Manipulator button 12", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(1, 11), true),
    
-   HALL_EFFECT("Lift hall effect sensors", WSInputType.HALL_EFFECT, new WsI2CInputConfig(Port.kMXP, 0x10), true),
-//   LIMIT_SWITCH("Limit switch", WSInputType.SWITCH, 0, true),
-   POT("Pot", WSInputType.POT, new WsAnalogInputConfig(0), true);
-//   ENCODER("Encoder", WSInputType.ENCODER, new WsAnalogInputConfig(0), true);
+//   HALL_EFFECT1("URHeffect", WSInputType.HALL_EFFECT, new WsI2CInputConfig(Port.kMXP, 0x10), true),
+   HALL_EFFECT1("URHeffect", WSInputType.HALL_EFFECT, new WsDigitalInputConfig(0, true), true),
+   HALL_EFFECT2("ULHeffect", WSInputType.HALL_EFFECT, new WsDigitalInputConfig(1, true), true),
+   HALL_EFFECT3("LRHeffect", WSInputType.HALL_EFFECT, new WsDigitalInputConfig(2, true), true),
+   HALL_EFFECT4("LLHeffect", WSInputType.HALL_EFFECT, new WsDigitalInputConfig(3, true), true),
+   POT("Pot", WSInputType.POT, new WsAnalogInputConfig(0), true),
+   ABSOLUTE_ENCODER1("UREncoder", WSInputType.ABSOLUTE_ENCODER, new WsAnalogInputConfig(0), true),
+   ABSOLUTE_ENCODER2("ULEncoder", WSInputType.ABSOLUTE_ENCODER, new WsAnalogInputConfig(1), true),
+   ABSOLUTE_ENCODER3("LREncoder", WSInputType.ABSOLUTE_ENCODER, new WsAnalogInputConfig(2), true),
+   ABSOLUTE_ENCODER4("LLEncoder", WSInputType.ABSOLUTE_ENCODER, new WsAnalogInputConfig(3), true);
    
 
    private final String m_name;

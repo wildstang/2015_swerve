@@ -19,16 +19,20 @@ public class DriveBase implements Subsystem
    double leftX;
    double leftY;
    double rightX;
+   boolean button9, button10;
    double magnitude;
    double rotMag;
-   double encodeAngle;
+   double encodeAngleUR, encodeAngleUL, encodeAngleLR, encodeAngleLL;
    double leftMag;
    double rightMag;
    double desiredAngle;
    final double DEADBAND = (Math.PI / 180);
    final double JOYSTICKDEADBAND = .02;
+   final double HOMEROTATESPEED = .05;
    boolean isOpposite;
-   double potVal;
+   WsVictor VictorURD, VictorULD, VictorURR, VictorULR, VictorLRD, VictorLLD, VictorLRR, VictorLLR;
+   boolean HallEffectUR, HallEffectUL, HallEffectLR, HallEffectLL;
+   double encoderOffsetUR = 0, encoderOffsetUL = 0, encoderOffsetLR = 0, encoderOffsetLL = 0;
   /* Constructor should not take args to insure that it can be instantiated via reflection. */
    public DriveBase()
    {
@@ -51,25 +55,74 @@ public class DriveBase implements Subsystem
       {
          rightX = ((AnalogInput) source).getValue();
       }
-//      if (source.getName().equals(WSInputs.ENCODER.getName()))
-//      {
-//         encodeAngle = ((AnalogInput)source).getValue();
-//      }
-      if (source.getName() == WSInputs.POT.getName())
+      if (source.getName().equals(WSInputs.ABSOLUTE_ENCODER1.getName()))
       {
-         potVal = ((AnalogInput) source).getValue();
+         encodeAngleUR = ((AnalogInput)source).getValue();
       }
-      
-
+      if (source.getName().equals(WSInputs.ABSOLUTE_ENCODER2.getName()))
+      {
+         encodeAngleUL = ((AnalogInput)source).getValue();
+      }
+      if (source.getName().equals(WSInputs.ABSOLUTE_ENCODER3.getName()))
+      {
+         encodeAngleLR = ((AnalogInput)source).getValue();
+      }
+      if (source.getName().equals(WSInputs.ABSOLUTE_ENCODER4.getName()))
+      {
+         encodeAngleLL = ((AnalogInput)source).getValue();
+      }
+      if (source.getName().equals(WSInputs.HALL_EFFECT1.getName()))
+      {
+         HallEffectUR = ((DigitalInput)source).getValue();
+      }
+      if (source.getName().equals(WSInputs.HALL_EFFECT2.getName()))
+      {
+         HallEffectUL = ((DigitalInput)source).getValue();
+      }
+      if (source.getName().equals(WSInputs.HALL_EFFECT3.getName()))
+      {
+         HallEffectLR = ((DigitalInput)source).getValue();
+      }
+      if (source.getName().equals(WSInputs.HALL_EFFECT4.getName()))
+      {
+         HallEffectLL = ((DigitalInput)source).getValue();
+      }
+      if (source.getName().equals(WSInputs.DRV_BUTTON_9.getName()))
+      {
+         button9 = ((DigitalInput)source).getValue();
+      }
+      if (source.getName().equals(WSInputs.DRV_BUTTON_10.getName()))
+      {
+         button10 = ((DigitalInput)source).getValue();
+      }
    }
 
    @Override
    public void init()
    {
+	  //add listeners for joysticks and absolute encoders 
       Core.getInputManager().getInput(WSInputs.DRV_THROTTLE.getName()).addInputListener(this);
       Core.getInputManager().getInput(WSInputs.DRV_LEFT_X.getName()).addInputListener(this);
       Core.getInputManager().getInput(WSInputs.DRV_HEADING.getName()).addInputListener(this);
-      Core.getInputManager().getInput(WSInputs.POT.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.ABSOLUTE_ENCODER1.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.ABSOLUTE_ENCODER2.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.ABSOLUTE_ENCODER3.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.ABSOLUTE_ENCODER4.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.HALL_EFFECT1.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.HALL_EFFECT2.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.HALL_EFFECT3.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.HALL_EFFECT4.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.DRV_BUTTON_9.getName()).addInputListener(this);
+      Core.getInputManager().getInput(WSInputs.DRV_BUTTON_10.getName()).addInputListener(this);
+      //assign variables for Victors
+      VictorURD = (WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URD.getName());
+      VictorULD = (WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULD.getName());
+      VictorURR = (WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URR.getName());
+      VictorULR = (WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULR.getName());
+      VictorLRD = (WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRD.getName());
+      VictorLLD = (WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLD.getName());
+      VictorLRR = (WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRR.getName());
+      VictorLLR = (WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLR.getName());
       
    }
 
@@ -83,7 +136,6 @@ public class DriveBase implements Subsystem
    @Override
    public void update()
    {
-	   encodeAngle = (potVal / 5) * (2 * Math.PI);
 	 //magnitude - how powerful drive motors are running (-1 to 1)
 	   //rotMag - how powerful the rotational motors are running (-1 to 1)
 	   
@@ -92,6 +144,15 @@ public class DriveBase implements Subsystem
 	   
 	   //encodeAngle - encoder angle readout (0 to 359.9)
 	   //DEADBAND - final double that will be the max disparity between desired angle and the actual angle of the swerve modules
+	   
+	   if(button9 && button10)
+	   {
+		   phoneHome(HOMEROTATESPEED);
+	   }
+	   encodeAngleUR = limitAngle(encodeAngleUR + encoderOffsetUR);
+	   encodeAngleUL = limitAngle(encodeAngleUL + encoderOffsetUL);
+	   encodeAngleLR = limitAngle(encodeAngleLR + encoderOffsetLR);
+	   encodeAngleLL = limitAngle(encodeAngleLL + encoderOffsetLL);
 	   
 	   if(Math.abs(leftX) < JOYSTICKDEADBAND) leftX = 0;
 	   if(Math.abs(leftY) < JOYSTICKDEADBAND) leftY = 0;
@@ -103,13 +164,13 @@ public class DriveBase implements Subsystem
 	   } else {
 		   desiredAngle = Math.abs(getAngle(leftX, leftY));
 		   magnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
-		   if (getAngleDistance(encodeAngle, desiredAngle) > Math.PI / 2) {
+		   if (getAngleDistance(encodeAngleUR, desiredAngle) > Math.PI / 2) {
 			   isOpposite = true;
 			   magnitude *= -1;
 		   } else {
 			   isOpposite = false;
 		   }
-		   rotMag = getRotMag(encodeAngle, desiredAngle);
+		   rotMag = getRotMag(encodeAngleUR, desiredAngle);
 		   
 		   if(Math.abs(magnitude) < .25)
 		   {
@@ -122,18 +183,14 @@ public class DriveBase implements Subsystem
 		   leftMag = adjustMagnitude(magnitude, -rightX, true);
 		   rightMag = adjustMagnitude(magnitude, -rightX, false);
 		   
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URD.getName())).setValue(rightMag);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULD.getName())).setValue(leftMag);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_URR.getName())).setValue(rotMag);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULR.getName())).setValue(rotMag);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRD.getName())).setValue(rightMag);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLD.getName())).setValue(leftMag);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LRR.getName())).setValue(rotMag);
-		   ((WsVictor)Core.getOutputManager().getOutput(WSOutputs.VICTOR_LLR.getName())).setValue(rotMag);
-		  
-//		   ((WsTalon)Core.getOutputManager().getOutput(WSOutputs.VICTOR_ULD.getName())).setValue(leftMag);
-		   
-
+		   VictorURD.setValue(rightMag);
+		   VictorULD.setValue(leftMag);
+		   VictorURR.setValue(rotMag);
+		   VictorULR.setValue(rotMag);
+		   VictorLRD.setValue(rightMag);
+		   VictorLLD.setValue(leftMag);
+		   VictorLRR.setValue(rotMag);
+		   VictorLLR.setValue(rotMag);
 	   }
 	   SmartDashboard.putNumber("Magnitude", magnitude);
 	   SmartDashboard.putNumber("Left Mag", leftMag);
@@ -141,8 +198,7 @@ public class DriveBase implements Subsystem
 	   SmartDashboard.putNumber("Desired angle", desiredAngle);
 	   SmartDashboard.putNumber("Left X", leftX);
 	   SmartDashboard.putNumber("Left Y", leftY);
-	   SmartDashboard.putNumber("pot", potVal);
-	   SmartDashboard.putNumber("encoder", encodeAngle);
+	   SmartDashboard.putNumber("encoder", encodeAngleUR);
 	   SmartDashboard.putNumber("rotMag", rotMag);
    }
 
@@ -152,6 +208,8 @@ public class DriveBase implements Subsystem
       return "Drive Base";
    }
    
+   //secondary method
+   //Accounts for rotation in drive motors
    private double adjustMagnitude(double original, double rotation, boolean isLeft) {
 	   if (isLeft) {
 		   return limitMotor(original + (Math.abs(original) * rotation));
@@ -160,6 +218,8 @@ public class DriveBase implements Subsystem
 	   }
    }
    
+   //primary method, calls no others
+   //limits motor output to 1
    private double limitMotor(double magnitude) {
 	   if (magnitude > 1) {
 		   return 1d;
@@ -170,9 +230,12 @@ public class DriveBase implements Subsystem
 	   }
    }
    
+   //big method (2 primary (limitAngle/getAngleDistance), 1 secondary(getAbsAngleDistance))
+   //sets mag and direction of rotation motor
    private double getRotMag(double actual, double desired) {
 	   double rotateMag;
 	   double oppositeDesired = limitAngle(Math.PI + desired);
+	   double angleDistance = getAngleDistance(desired, actual);
 	   if (isOpposite) {
 		   if (getAbsAngleDistance(oppositeDesired, actual) < 0) {
 			   rotateMag = 1d;
@@ -187,11 +250,11 @@ public class DriveBase implements Subsystem
 		   }
 	   }
 	   
-	   if(getAngleDistance(desired, actual) < (Math.PI/9))
+	   if(angleDistance < (Math.PI/9))
 	   {
 		   //Deadband = 1 degree
-		   rotateMag *= (getAngleDistance(desired, actual) / (Math.PI/9));
-		   if(getAngleDistance(desired, actual) < DEADBAND)
+		   rotateMag *= (angleDistance / (Math.PI/9));
+		   if(angleDistance < DEADBAND)
 		   {
 			   return 0;
 		   }
@@ -199,6 +262,8 @@ public class DriveBase implements Subsystem
 	   return rotateMag;
    }
    
+   //secondary, 1 primary call
+   //Finds angle of driver joystick
    private static double getAngle(double x, double y) {
 	   double angle = 0;
 	   if (y > 0) {
@@ -218,7 +283,8 @@ public class DriveBase implements Subsystem
    }
    
    
-   
+   //primary
+   //runs angle measures over (negative value goes to 359, above 360 goes to 1)
    private static double limitAngle(double oldAngle) {
 	   double newAngle = oldAngle;
 	   while(newAngle >= (2*Math.PI)) {
@@ -231,6 +297,8 @@ public class DriveBase implements Subsystem
 	   return newAngle;
    }
    
+   //secondary, 1 primary call
+   //returns positive or negative angle distance
    private static double getAbsAngleDistance(double finalAngle, double initialAngle) {
 	   double diff = getAngleDistance(finalAngle, initialAngle);
 		   if (finalAngle < (1.5*Math.PI)) {
@@ -249,6 +317,8 @@ public class DriveBase implements Subsystem
 	   return diff;
    }
    
+   //primary
+   //returns magnitude of angle distance
    private static double getAngleDistance(double angle1, double angle2) {
 	   double diff = Math.abs(angle1 - angle2);
 	   if (diff > Math.PI) {
@@ -256,5 +326,37 @@ public class DriveBase implements Subsystem
 	   }
 	   return diff;
    }
-
+   
+   //primary
+   //runs wheels until home position found
+   private void setHomePosition(double rotateSpeed)
+   {
+	   while(!HallEffectUR)
+	   {
+		   VictorURR.setValue(rotateSpeed);
+	   }
+	   while(!HallEffectUL)
+	   {
+		   VictorULR.setValue(rotateSpeed);
+	   }
+	   while(!HallEffectLR)
+	   {
+		   VictorLRR.setValue(rotateSpeed);
+	   }
+	   while(!HallEffectLL)
+	   {
+		   VictorLLR.setValue(rotateSpeed);
+	   }
+   }
+   
+   //secondary, 1 primary call
+   //sets home position & encoder offset
+   private void phoneHome(double rotateSpeed)
+   {
+	   setHomePosition(rotateSpeed);
+	   encoderOffsetUR = encodeAngleUR;
+	   encoderOffsetUL = encodeAngleUL;
+	   encoderOffsetLR = encodeAngleLR;
+	   encoderOffsetLL = encodeAngleLL;
+   }
 }
