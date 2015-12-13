@@ -101,11 +101,11 @@ public class HardwareTest implements Subsystem
 //         printJoystickState(source);
          m_throttle = ((AnalogInput)source).getValue();
       }
-         if (source.getName().equals(WSInputs.POT.getName()))
-      {
+//         if (source.getName().equals(WSInputs.POT.getName()))
+//      {
 //         printJoystickState(source);
-         potVal = ((AnalogInput)source).getValue();
-      }
+//         potVal = ((AnalogInput)source).getValue();
+//      }
 //      else if (source.getName().equals(WSInputs.DRV_LEFT_X.getName()))
 //      {
 //         printJoystickState(source);
@@ -164,7 +164,7 @@ public class HardwareTest implements Subsystem
 //      Core.getInputManager().getInput(WSInputs.DRV_DPAD_X.getName()).addInputListener(this);
 //      Core.getInputManager().getInput(WSInputs.DRV_DPAD_Y.getName()).addInputListener(this);
       
-    Core.getInputManager().getInput(WSInputs.POT.getName()).addInputListener(this);
+//    Core.getInputManager().getInput(WSInputs.POT.getName()).addInputListener(this);
    }
 
    @Override
