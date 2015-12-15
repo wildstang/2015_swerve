@@ -191,6 +191,9 @@ public class DriveBase implements Subsystem
   leftMag = adjustMagnitude(magnitude, -rightX, true);
   rightMag = adjustMagnitude(magnitude, -rightX, false);
   
+
+  }
+  //assign motor values
   VictorURD.setValue(rightMag);
   VictorULD.setValue(leftMag);
   VictorURR.setValue(rotMagUR);
@@ -199,7 +202,8 @@ public class DriveBase implements Subsystem
   VictorLLD.setValue(leftMag);
   VictorLRR.setValue(rotMagLR);
   VictorLLR.setValue(rotMagLL);
-  }
+  
+  //print out important values to dashboard
   SmartDashboard.putNumber("Magnitude", magnitude);
   SmartDashboard.putNumber("Left Mag", leftMag);
   SmartDashboard.putNumber("Right Mag", rightMag);
