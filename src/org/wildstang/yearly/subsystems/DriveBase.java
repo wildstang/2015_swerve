@@ -163,19 +163,18 @@ public class DriveBase implements Subsystem
   rotMagLL = 0;
   } else {
   desiredAngle = Math.abs(getAngle(leftX, leftY));
-  magnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
-  if (getAngleDistance(encodeAngleUR, desiredAngle) > Math.PI / 2) {
-  isOpposite = true;
-  magnitude *= -1;
-  } else {
-  isOpposite = false;
-  }
-  
   desiredAngleUR = limitAngle(desiredAngle + encoderOffsetUR);
   desiredAngleUL = limitAngle(desiredAngle + encoderOffsetUL);
   desiredAngleLR = limitAngle(desiredAngle + encoderOffsetLR);
   desiredAngleLL = limitAngle(desiredAngle + encoderOffsetLL);
   
+  magnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
+  if (getAngleDistance(encodeAngleUR, desiredAngleUR) > Math.PI / 2) {
+  isOpposite = true;
+  magnitude *= -1;
+  } else {
+  isOpposite = false;
+  }
   rotMagUR = getRotMag(encodeAngleUR, desiredAngleUR);
   rotMagUL = getRotMag(encodeAngleUL, desiredAngleUL);
   rotMagLR = getRotMag(encodeAngleLR, desiredAngleLR);
