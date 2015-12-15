@@ -14,15 +14,15 @@ import org.wildstang.hardware.crio.outputs.config.WsVictorConfig;
 
 public enum WSOutputs implements Outputs
 {
-   VICTOR_URD("Victor SP1",    WSOutputType.VICTOR,    new WsVictorConfig(0,  0.0), true),
+   VICTOR_URD("Victor SP1",    WSOutputType.VICTOR,    new WsVictorConfig(1,  0.0), true),
 //   VICTOR_ULD("Talon",            WSOutputType.TALON,     new WsTalonConfig(1,  0.0), true),
-   VICTOR_ULD("Victor SP2",    WSOutputType.VICTOR,    new WsVictorConfig(1,  0.0), true),
-   VICTOR_URR("Victor SP3",    WSOutputType.VICTOR,    new WsVictorConfig(2,  0.0), true),
-   VICTOR_ULR("Victor SP4",    WSOutputType.VICTOR,    new WsVictorConfig(3,  0.0), true),
-   VICTOR_LRD("Victor SP5",    WSOutputType.VICTOR,    new WsVictorConfig(4,  0.0), true),
-   VICTOR_LLD("Victor SP6",    WSOutputType.VICTOR,    new WsVictorConfig(5,  0.0), true),
-   VICTOR_LRR("Victor SP7",    WSOutputType.VICTOR,    new WsVictorConfig(6,  0.0), true),
-   VICTOR_LLR("Victor SP8",    WSOutputType.VICTOR,    new WsVictorConfig(7,  0.0), true),
+   VICTOR_ULD("Victor SP2",    WSOutputType.VICTOR,    new WsVictorConfig(0,  0.0), true),
+   VICTOR_URR("Victor SP3",    WSOutputType.VICTOR,    new WsVictorConfig(5,  0.0), true),
+   VICTOR_ULR("Victor SP4",    WSOutputType.VICTOR,    new WsVictorConfig(4,  0.0), true),
+   VICTOR_LRD("Victor SP5",    WSOutputType.VICTOR,    new WsVictorConfig(3,  0.0), true),
+   VICTOR_LLD("Victor SP6",    WSOutputType.VICTOR,    new WsVictorConfig(2,  0.0), true),
+   VICTOR_LRR("Victor SP7",    WSOutputType.VICTOR,    new WsVictorConfig(7,  0.0), true),
+   VICTOR_LLR("Victor SP8",    WSOutputType.VICTOR,    new WsVictorConfig(6,  0.0), true),
 
    // Solenoids
    DOUBLE("Double solenoid", WSOutputType.SOLENOID_DOUBLE, new WsDoubleSolenoidConfig(1, 0, 1, WsDoubleSolenoidState.FORWARD), true),

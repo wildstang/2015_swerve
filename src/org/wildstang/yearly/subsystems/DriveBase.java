@@ -188,16 +188,20 @@ public class DriveBase implements Subsystem
 		   
 		   leftMag = adjustMagnitude(magnitude, -rightX, true);
 		   rightMag = adjustMagnitude(magnitude, -rightX, false);
-		   
-		   VictorURD.setValue(rightMag);
-		   VictorULD.setValue(leftMag);
-		   VictorURR.setValue(rotMagUR);
-		   VictorULR.setValue(rotMagUL);
-		   VictorLRD.setValue(rightMag);
-		   VictorLLD.setValue(leftMag);
-		   VictorLRR.setValue(rotMagLR);
-		   VictorLLR.setValue(rotMagLL);
+		  
 	   }
+	   
+	   //Set motor values
+	   VictorURD.setValue(rightMag);
+	   VictorULD.setValue(leftMag);
+	   VictorURR.setValue(rotMagUR);
+	   VictorULR.setValue(rotMagUL);
+	   VictorLRD.setValue(rightMag);
+	   VictorLLD.setValue(leftMag);
+	   VictorLRR.setValue(rotMagLR);
+	   VictorLLR.setValue(rotMagLL);
+	   
+	   //Display critical values to dashboard
 	   SmartDashboard.putNumber("Magnitude", magnitude);
 	   SmartDashboard.putNumber("Left Mag", leftMag);
 	   SmartDashboard.putNumber("Right Mag", rightMag);
@@ -244,15 +248,19 @@ public class DriveBase implements Subsystem
 	   double angleDistance = getAngleDistance(desired, actual);
 	   if (isOpposite) {
 		   if (getAbsAngleDistance(oppositeDesired, actual) < 0) {
-			   rotateMag = 1d;
+//			   rotateMag = 1d;
+			   rotateMag = -1d / 2;
 		   } else {
-			   rotateMag = -1d;
+//			   rotateMag = -1d;
+			   rotateMag = 1d / 2;
 		   }
 	   } else {
 		   if (getAbsAngleDistance(desired, actual) < 0) {
-			   rotateMag = 1d;
+//			   rotateMag = 1d;
+			   rotateMag = -1d / 2;
 		   } else {
-			   rotateMag = -1d;
+//			   rotateMag = -1d;
+			   rotateMag = 1d / 2;
 		   }
 	   }
 	   

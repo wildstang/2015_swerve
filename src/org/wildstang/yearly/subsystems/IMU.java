@@ -9,6 +9,11 @@ import org.wildstang.yearly.robot.WSInputs;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
+import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.util.TimerTask;
 
 /**
  *
@@ -16,11 +21,9 @@ import edu.wpi.first.wpilibj.I2C.Port;
  */
 public class IMU implements Subsystem
 {
-
-   MessageHandler messageSender;
    // Sent states
    boolean dataReceived;
-   static byte[] IMUData = new byte[6];
+   private byte[] IMUData;
 //   PosX1
 //   PosX2
 //   PosY1
@@ -29,52 +32,31 @@ public class IMU implements Subsystem
 //   Heading2
 
    private String m_name;
-
-   public static class LedCmd
-   {
-
-      byte[] dataBytes = new byte[5];
-
-      public LedCmd(int command, int payloadByteOne, int payloadByteTwo)
-      {
-
-         dataBytes[0] = (byte) command;
-         dataBytes[1] = (byte) payloadByteOne;
-         dataBytes[2] = (byte) payloadByteTwo;
-         dataBytes[3] = 0;
-         dataBytes[4] = 0;
-      }
-
-      byte[] getBytes()
-      {
-         return dataBytes;
-      }
-   }
+   private I2C i2c;
+   private final static int I2CADDRESS = 0x6f;
+   private java.util.Timer updater;
+   
 
    public IMU(String name)
    {
       m_name = name;
-      // Fire up the message sender thread.
-      Thread t = new Thread(messageSender = new MessageHandler());
-      // This is safe because there is only one instance of the subsystem in
-      // the subsystem container.
-      t.start();
-
+      i2c = new I2C(Port.kOnboard, I2CADDRESS);
+      IMUData = new byte[6];
+      updater = new java.util.Timer();
    }
 
    @Override
    public void init()
    {
       // Nothing to do anymore, I'm bored.
-      
-      dataReceived = false;
    }
 
    @Override
    public void update()
-   {
-
-      }
+   	{
+	   i2c.read(I2CADDRESS, IMUData.length, IMUData);
+	   Timer.delay(0.005); // Delay to prevent over polling
+    }
 
 
    @Override
@@ -87,72 +69,34 @@ public class IMU implements Subsystem
    {
       return m_name;
    }
+   
+	// Start 10Hz polling
+	public void start() {
+		updater.scheduleAtFixedRate(new IMUUpdater(), 0, 100);
+	}
 
-   private boolean sendData(LedCmd ledCmd)
-   {
-      byte[] dataBytes = ledCmd.getBytes();
+	// Start polling for period in milliseconds
+	public void start(int period) {
+		updater.scheduleAtFixedRate(new IMUUpdater(), 0, period);
+	}
 
-      synchronized (messageSender)
-      {
-         messageSender.setSendData(dataBytes, dataBytes.length);
-         messageSender.notify();
-      }
-
-      return true;
-   }
-
-   private static class MessageHandler implements Runnable
-   {
-      // Designed to only have one single threaded controller. (LED)
-      // Offload to a thread avoid blocking main thread with LED sends.
-
-      static byte[] rcvBytes;
-      byte[] sendData;
-      int sendSize = 0;
-      I2C i2c;
-      boolean running = true;
-      boolean dataToSend = false;
-
-      public MessageHandler()
-      {
-         // Get ourselves an i2c instance to send out some data.
-         i2c = new I2C(Port.kOnboard, 0x6F);
-      }
-
-      @Override
-      public void run()
-      {
-         while (running)
-         {
-            synchronized (this)
-            {
-               try
-               {
-                  // blocking sleep until someone calls notify.
-                  this.wait();
-                  // Need at least 5 bytes and someone has to have called
-                  // setSendData.
-                  i2c.transaction(sendData, 0, IMUData, IMUData.length);
-               }
-               catch (InterruptedException e)
-               {
-               }
-            }
-         }
-      }
-      
-      public void setSendData(byte[] data, int size)
-      {
-         sendData = data;
-         sendSize = size;
-         dataToSend = true;
-      }
-      
-      public void stop()
-      {
-         running = false;
-      }
-   }
+	public void stop() {
+		updater.cancel();
+		updater = new java.util.Timer();
+	}
+   
+	private class IMUUpdater extends TimerTask {
+		public void run() {
+			while (true) {
+				update();
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 
 @Override
 public void inputUpdate(Input source) {
