@@ -5,6 +5,7 @@ import org.wildstang.framework.hardware.InputConfig;
 import org.wildstang.framework.io.inputs.InputType;
 import org.wildstang.hardware.JoystickConstants;
 import org.wildstang.hardware.crio.inputs.WSInputType;
+import org.wildstang.hardware.crio.inputs.config.WsAbsoluteEncoderConfig;
 import org.wildstang.hardware.crio.inputs.config.WsAnalogInputConfig;
 import org.wildstang.hardware.crio.inputs.config.WsDigitalInputConfig;
 import org.wildstang.hardware.crio.inputs.config.WsI2CInputConfig;
@@ -58,15 +59,15 @@ public enum WSInputs implements Inputs
 //   MAN_BUTTON_12("Manipulator button 12", WSInputType.JS_BUTTON, new WsJSButtonInputConfig(1, 11), true),
    
 //   HALL_EFFECT1("URHeffect", WSInputType.HALL_EFFECT, new WsI2CInputConfig(Port.kMXP, 0x10), true),
-   HALL_EFFECT1("URHeffect", WSInputType.HALL_EFFECT, new WsDigitalInputConfig(0, true), true),
-   HALL_EFFECT2("ULHeffect", WSInputType.HALL_EFFECT, new WsDigitalInputConfig(1, true), true),
-   HALL_EFFECT3("LRHeffect", WSInputType.HALL_EFFECT, new WsDigitalInputConfig(2, true), true),
-   HALL_EFFECT4("LLHeffect", WSInputType.HALL_EFFECT, new WsDigitalInputConfig(3, true), true),
-   POT("Pot", WSInputType.POT, new WsAnalogInputConfig(0), true),
-   ABSOLUTE_ENCODER1("UREncoder", WSInputType.ABSOLUTE_ENCODER, new WsAnalogInputConfig(0), true),
-   ABSOLUTE_ENCODER2("ULEncoder", WSInputType.ABSOLUTE_ENCODER, new WsAnalogInputConfig(1), true),
-   ABSOLUTE_ENCODER3("LREncoder", WSInputType.ABSOLUTE_ENCODER, new WsAnalogInputConfig(2), true),
-   ABSOLUTE_ENCODER4("LLEncoder", WSInputType.ABSOLUTE_ENCODER, new WsAnalogInputConfig(3), true);
+   HALL_EFFECT1("URHeffect", WSInputType.SWITCH, new WsDigitalInputConfig(0, true), true),
+   HALL_EFFECT2("ULHeffect", WSInputType.SWITCH, new WsDigitalInputConfig(1, true), true),
+   HALL_EFFECT3("LRHeffect", WSInputType.SWITCH, new WsDigitalInputConfig(2, true), true),
+   HALL_EFFECT4("LLHeffect", WSInputType.SWITCH, new WsDigitalInputConfig(3, true), true),
+//   POT("Pot", WSInputType.POT, new WsAnalogInputConfig(0), true),
+   ABSOLUTE_ENCODER1("UREncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(0, 5), true),
+   ABSOLUTE_ENCODER2("ULEncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(1, 5), true),
+   ABSOLUTE_ENCODER3("LREncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(2, 5), true),
+   ABSOLUTE_ENCODER4("LLEncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(3, 5), true);
    
 
    private final String m_name;
