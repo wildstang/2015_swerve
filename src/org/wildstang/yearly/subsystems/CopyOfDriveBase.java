@@ -11,7 +11,7 @@ import org.wildstang.yearly.robot.WSOutputs;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class DriveBase implements Subsystem
+public class CopyOfDriveBase implements Subsystem
 {
    double leftX;
    double leftY;
@@ -44,7 +44,7 @@ public class DriveBase implements Subsystem
     * Constructor should not take args to insure that it can be instantiated via
     * reflection.
     */
-   public DriveBase()
+   public CopyOfDriveBase()
    {
 
    }
@@ -156,11 +156,13 @@ public class DriveBase implements Subsystem
       // DEADBAND - final double that will be the max disparity between desired
       // angle and the actual angle of the swerve modules
 
+      // If home and select are pressed, rotate the wheels to their home position
       if (button9 && button10)
       {
          phoneHome(HOMEROTATESPEED);
       }
 
+      // Allow a deadband for small joystick offsets
       if (Math.abs(leftX) < JOYSTICKDEADBAND) leftX = 0;
       if (Math.abs(leftY) < JOYSTICKDEADBAND) leftY = 0;
       if (Math.abs(rightX) < JOYSTICKDEADBAND) rightX = 0;
@@ -175,13 +177,19 @@ public class DriveBase implements Subsystem
       }
       else
       {
+         // Determine target angle from joystick position
          desiredAngle = Math.abs(getAngle(leftX, leftY));
+         
+         // Add the offset for each encoder and limit to 360 degrees for individual rotation output
          desiredAngleUR = limitAngle(desiredAngle + encoderOffsetUR);
          desiredAngleUL = limitAngle(desiredAngle + encoderOffsetUL);
          desiredAngleLR = limitAngle(desiredAngle + encoderOffsetLR);
          desiredAngleLL = limitAngle(desiredAngle + encoderOffsetLL);
 
+         // Determine magnitude of stick deflection for output speed
          magnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
+         
+         // If the target angle is more than 90 degrees away, turn the other direction and change drive direction
          if (getAngleDistance(encodeAngleUR, desiredAngleUR) > Math.PI / 2)
          {
             isOpposite = true;
@@ -196,6 +204,7 @@ public class DriveBase implements Subsystem
          rotMagLR = getRotMag(encodeAngleLR, desiredAngleLR);
          rotMagLL = getRotMag(encodeAngleLL, desiredAngleLL);
 
+         // For small input magnitude (small movements) scale the output to give a slower lead-in ramp up
          if (Math.abs(magnitude) < .25)
          {
             boolean isPositive = true;
@@ -210,6 +219,7 @@ public class DriveBase implements Subsystem
             }
          }
 
+         // Adjust the output magnitude by any rotation amount to allow the robot to turn
          leftMag = adjustMagnitude(magnitude, -rightX, true);
          rightMag = adjustMagnitude(magnitude, -rightX, false);
 
@@ -243,8 +253,7 @@ public class DriveBase implements Subsystem
 
    // secondary method
    // Accounts for rotation in drive motors
-   private double adjustMagnitude(double original, double rotation,
-         boolean isLeft)
+   private double adjustMagnitude(double original, double rotation, boolean isLeft)
    {
       if (isLeft)
       {
@@ -330,6 +339,7 @@ public class DriveBase implements Subsystem
       double angle = 0;
       if (y > 0)
       {
+         // 
          angle = limitAngle(Math.atan(x / y));
       }
       else if (x >= 0 && y < 0)
