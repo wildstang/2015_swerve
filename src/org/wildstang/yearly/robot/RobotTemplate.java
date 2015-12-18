@@ -56,31 +56,38 @@ public class RobotTemplate extends IterativeRobot
       // Add the monitored inputs
       // TODO: Can we do this better?
       
-      Core.getStateTracker().addIOInfo("Current 0", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 1", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 2", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 3", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 4", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 5", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 6", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 7", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 8", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 9", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 10", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 11", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 12", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 13", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 14", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Current 15", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Total Current", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Voltage", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Temperature", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Enabled", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Teleop", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Auto", "Monitor", "Input", "");
-      Core.getStateTracker().addIOInfo("Memory in use", "Monitor", "Input", "");
+      Core.getStateTracker().addIOInfo("Current 0", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 1", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 2", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 3", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 4", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 5", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 6", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 7", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 8", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 9", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 10", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 11", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 12", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 13", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 14", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Current 15", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Total Current", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Voltage", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Temperature", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Enabled", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Teleop", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Auto", "Monitor", "Input", null);
+      Core.getStateTracker().addIOInfo("Memory in use", "Monitor", "Input", null);
 
-      
+      Core.getStateTracker().addIOInfo("Encoder offset", "Swerve", "Input", null);
+      Core.getStateTracker().addIOInfo("Desired angle", "Swerve", "Input", null);
+      Core.getStateTracker().addIOInfo("Target encoder angle", "Swerve", "Input", null);
+      Core.getStateTracker().addIOInfo("Magnitude", "Swerve", "Input", null);
+      Core.getStateTracker().addIOInfo("isOpposite", "Swerve", "Input", null);
+      Core.getStateTracker().addIOInfo("Rotation magnitude", "Swerve", "Input", null);
+      Core.getStateTracker().addIOInfo("angleDistance", "Swerve", "Input", null);
+
       Writer outputWriter = null;
       
       outputWriter = getFileWriter();

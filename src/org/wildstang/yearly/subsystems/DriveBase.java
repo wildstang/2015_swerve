@@ -176,13 +176,20 @@ public class DriveBase implements Subsystem
       else
       {
          desiredAngle = Math.abs(getAngle(leftX, leftY));
+         Core.getStateTracker().addState("Desired angle", "Desired angle", desiredAngle);
          desiredAngleUR = limitAngle(desiredAngle + encoderOffsetUR);
          desiredAngleUL = limitAngle(desiredAngle + encoderOffsetUL);
          desiredAngleLR = limitAngle(desiredAngle + encoderOffsetLR);
          desiredAngleLL = limitAngle(desiredAngle + encoderOffsetLL);
 
+         Core.getStateTracker().addState("Encoder offset", "Encoder offset", encoderOffsetUR);
+         Core.getStateTracker().addState("Target encoder angle", "Target encoder angle", desiredAngleUR);
+
          magnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
-         if (getAngleDistance(encodeAngleUR, desiredAngleUR) > Math.PI / 2)
+
+         double angleDistance = getAngleDistance(encodeAngleUR, desiredAngleUR);
+         Core.getStateTracker().addState("angleDistance", "angleDistance", angleDistance);
+         if (angleDistance > Math.PI / 2)
          {
             isOpposite = true;
             magnitude *= -1;
@@ -195,6 +202,10 @@ public class DriveBase implements Subsystem
          rotMagUL = getRotMag(encodeAngleUL, desiredAngleUL);
          rotMagLR = getRotMag(encodeAngleLR, desiredAngleLR);
          rotMagLL = getRotMag(encodeAngleLL, desiredAngleLL);
+
+         Core.getStateTracker().addState("Magnitude", "Magnitude", magnitude);
+         Core.getStateTracker().addState("isOpposite", "isOpposite", isOpposite);
+         Core.getStateTracker().addState("Rotation magnitude", "Rotation magnitude", rotMagUR);
 
          if (Math.abs(magnitude) < .25)
          {
@@ -286,30 +297,30 @@ public class DriveBase implements Subsystem
       {
          if (getAbsAngleDistance(oppositeDesired, actual) < 0)
          {
-            // rotateMag = 1d / 2;
+//             rotateMag = 1d / 2;
             rotateMag = -1d / 2;
          }
          else
          {
             rotateMag = 1d / 2;
-            // rotateMag = -1d / 2;
+//             rotateMag = -1d / 2;
          }
       }
       else
       {
          if (getAbsAngleDistance(desired, actual) < 0)
          {
-            // rotateMag = 1d / 2;
+//             rotateMag = 1d / 2;
             rotateMag = -1d / 2;
          }
          else
          {
             rotateMag = 1d / 2;
-            // rotateMag = -1d / 2;
+//             rotateMag = -1d / 2;
          }
       }
 
-      rotateMag /= 5;
+      rotateMag /= 2;
 
       if (Math.abs(angleDistance) < (Math.PI / 9))
       {

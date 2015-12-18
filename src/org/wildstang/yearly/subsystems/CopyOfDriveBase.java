@@ -24,7 +24,7 @@ public class CopyOfDriveBase implements Subsystem
    double rightMag;
    double desiredAngleUR, desiredAngleUL, desiredAngleLR, desiredAngleLL,
          desiredAngle;
-   final double DEADBAND = (Math.PI / 180);
+   final double DEADBAND = 1;
    final double JOYSTICKDEADBAND = .02;
    final double HOMEROTATESPEED = .05;
    boolean isOpposite;
@@ -67,19 +67,19 @@ public class CopyOfDriveBase implements Subsystem
       }
       if (source.getName().equals(WSInputs.ABSOLUTE_ENCODER1.getName()))
       {
-         encodeAngleUR = ((AnalogInput) source).getValue() * Math.PI / 180;
+         encodeAngleUR = ((AnalogInput) source).getValue();
       }
       if (source.getName().equals(WSInputs.ABSOLUTE_ENCODER2.getName()))
       {
-         encodeAngleUL = ((AnalogInput) source).getValue() * Math.PI / 180;
+         encodeAngleUL = ((AnalogInput) source).getValue();
       }
       if (source.getName().equals(WSInputs.ABSOLUTE_ENCODER3.getName()))
       {
-         encodeAngleLR = ((AnalogInput) source).getValue() * Math.PI / 180;
+         encodeAngleLR = ((AnalogInput) source).getValue();
       }
       if (source.getName().equals(WSInputs.ABSOLUTE_ENCODER4.getName()))
       {
-         encodeAngleLL = ((AnalogInput) source).getValue() * Math.PI / 180;
+         encodeAngleLL = ((AnalogInput) source).getValue();
       }
       if (source.getName().equals(WSInputs.HALL_EFFECT1.getName()))
       {
@@ -190,7 +190,7 @@ public class CopyOfDriveBase implements Subsystem
          magnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
          
          // If the target angle is more than 90 degrees away, turn the other direction and change drive direction
-         if (getAngleDistance(encodeAngleUR, desiredAngleUR) > Math.PI / 2)
+         if (getAngleDistance(encodeAngleUR, desiredAngleUR) > 90)
          {
             isOpposite = true;
             magnitude *= -1;
@@ -289,7 +289,7 @@ public class CopyOfDriveBase implements Subsystem
    private double getRotMag(double actual, double desired)
    {
       double rotateMag;
-      double oppositeDesired = limitAngle(Math.PI + desired);
+      double oppositeDesired = limitAngle(180 + desired);
       double angleDistance = getAngleDistance(desired, actual);
       if (isOpposite)
       {
@@ -320,10 +320,10 @@ public class CopyOfDriveBase implements Subsystem
 
       rotateMag /= 5;
 
-      if (Math.abs(angleDistance) < (Math.PI / 9))
+      if (Math.abs(angleDistance) < 20)
       {
          // Deadband = 1 degree
-         rotateMag *= (angleDistance / (Math.PI / 9));
+         rotateMag *= (angleDistance / 20);
          if (angleDistance < DEADBAND)
          {
             return 0;
@@ -340,23 +340,23 @@ public class CopyOfDriveBase implements Subsystem
       if (y > 0)
       {
          // 
-         angle = limitAngle(Math.atan(x / y));
+         angle = limitAngle(Math.atan(x / y) * 180 / Math.PI);
       }
       else if (x >= 0 && y < 0)
       {
-         angle = Math.PI - limitAngle(Math.atan(x / y));
+         angle = 180 - limitAngle(Math.atan(x / y) * 180 / Math.PI);
       }
       else if (x <= 0 && y < 0)
       {
-         angle = Math.PI + limitAngle(Math.atan(x / y));
+         angle = 180 + limitAngle(Math.atan(x / y) * 180 / Math.PI);
       }
       else if (y == 0 && x >= 0)
       {
-         angle = (Math.PI / 2);
+         angle = 90;
       }
       else
       {
-         angle = (Math.PI * 1.5);
+         angle = 270;
       }
 
       return angle;
@@ -367,13 +367,13 @@ public class CopyOfDriveBase implements Subsystem
    private static double limitAngle(double oldAngle)
    {
       double newAngle = oldAngle;
-      while (newAngle >= (2 * Math.PI))
+      while (newAngle >= 360)
       {
-         newAngle -= (2 * Math.PI);
+         newAngle -= 360;
       }
       while (newAngle < 0)
       {
-         newAngle += (2 * Math.PI);
+         newAngle += 360;
       }
 
       return newAngle;
@@ -385,7 +385,7 @@ public class CopyOfDriveBase implements Subsystem
          double initialAngle)
    {
       double diff = getAngleDistance(finalAngle, initialAngle);
-      if (finalAngle < (1.5 * Math.PI))
+      if (finalAngle < 270)
       {
          if (initialAngle > finalAngle)
          {
@@ -394,7 +394,7 @@ public class CopyOfDriveBase implements Subsystem
       }
       else
       {
-         double oppositeFinal = finalAngle - (Math.PI);
+         double oppositeFinal = finalAngle - 180;
          if (initialAngle > finalAngle || initialAngle < oppositeFinal)
          {
             diff *= -1;
@@ -409,9 +409,9 @@ public class CopyOfDriveBase implements Subsystem
    private static double getAngleDistance(double angle1, double angle2)
    {
       double diff = Math.abs(angle1 - angle2);
-      if (diff > Math.PI)
+      if (diff > 180)
       {
-         diff = (Math.PI * 2) - diff;
+         diff = 360 - diff;
       }
       return diff;
    }
