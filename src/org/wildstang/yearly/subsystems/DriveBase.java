@@ -382,29 +382,40 @@ public class DriveBase implements Subsystem
 
    // secondary, 1 primary call
    // returns positive or negative angle distance
-   private static double getAbsAngleDistance(double finalAngle,
-         double initialAngle)
-   {
+   private static double getAbsAngleDistance(double finalAngle, double initialAngle) {
+      //returns the shortest raw angle between the two angles
       double diff = getAngleDistance(finalAngle, initialAngle);
-      if (finalAngle < (1.5 * Math.PI))
-      {
-         if (initialAngle > finalAngle)
-         {
-            diff *= -1;
-         }
+      //ORIGINAL
+      //if the final angle is less than 270 and initial is greater, then distance is negative
+      //final = 5, initial = 355 FAIL
+//    if (finalAngle < (Math.PI*1.5)) {
+//       if (initialAngle > finalAngle) {
+//       diff *= -1;
+//     }
+//    } 
+      
+      //NEW
+      //if final is less than 180 and initial is less than 180 greater than final
+      //then distance is negative
+      if (finalAngle <= (Math.PI)) {
+         if (initialAngle < finalAngle + 180) {
+         diff *= -1;
+       }
+      } 
+      else {
+       // this applies to an angle greater than 270 only
+         //THIS LOGIC WORKS FOR ALL GREATER THAN 180, and was originally correct
+      double oppositeFinal = finalAngle - (Math.PI);
+      //if the initial is greater than final(between final and 360)
+      //or between 0 and the opposite angle, the shortest distance between 
+      //the final and initial is negative
+      if (initialAngle > finalAngle || initialAngle < oppositeFinal) {
+      diff *= -1;
       }
-      else
-      {
-         double oppositeFinal = finalAngle - (Math.PI);
-         if (initialAngle > finalAngle || initialAngle < oppositeFinal)
-         {
-            diff *= -1;
-         }
       }
 
       return diff;
-   }
-
+       }
    // primary
    // returns magnitude of angle distance
    private static double getAngleDistance(double angle1, double angle2)
