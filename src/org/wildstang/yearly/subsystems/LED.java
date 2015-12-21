@@ -62,7 +62,6 @@ public class LED implements Subsystem
 
       Core.getInputManager().getInput(SwerveInputs.ANTI_TURBO.getName()).addInputListener(this);
       Core.getInputManager().getInput(SwerveInputs.TURBO.getName()).addInputListener(this);
-      Core.getInputManager().getInput(SwerveInputs.DRV_BUTTON_2.getName()).addInputListener(this);
 
       m_ledOutput = (WsI2COutput) Core.getOutputManager().getOutput(WSOutputs.LED.getName());
    }
