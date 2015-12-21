@@ -347,7 +347,7 @@ public class DriveBase implements Subsystem
 	   
 	   if(Math.abs(distance) < DEADBAND) return 0;
 	   
-	   while(distance < 0)
+	   if(distance < 0)
 	   {
 		   rotateMag *= -1;
 	   }
