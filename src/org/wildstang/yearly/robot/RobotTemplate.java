@@ -84,10 +84,10 @@ public class RobotTemplate extends IterativeRobot
       Core.getStateTracker().addIOInfo("Desired angle", "Swerve", "Input", null);
       Core.getStateTracker().addIOInfo("Target encoder angle", "Swerve", "Input", null);
       Core.getStateTracker().addIOInfo("Magnitude", "Swerve", "Input", null);
-      Core.getStateTracker().addIOInfo("isOpposite", "Swerve", "Input", null);
       Core.getStateTracker().addIOInfo("Rotation magnitude", "Swerve", "Input", null);
       Core.getStateTracker().addIOInfo("angleDistance", "Swerve", "Input", null);
-
+      Core.getStateTracker().addIOInfo("Encoder angle", "Swerve", "Input", null);
+      
       Writer outputWriter = null;
       
       outputWriter = getFileWriter();
