@@ -189,7 +189,7 @@ public class DriveBase implements Subsystem
 
          magnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
 
-         double angleDistance = getAngleDistance(encodeAngleUR, desiredAngleUR);
+         double angleDistance = getAngleDistance(encodeAngleUL, desiredAngleUL);
          Core.getStateTracker().addState("angleDistance", "angleDistance", angleDistance);
 //         if (angleDistance > Math.PI / 2)
 //         {
