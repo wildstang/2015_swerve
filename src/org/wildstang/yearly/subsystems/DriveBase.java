@@ -178,13 +178,14 @@ public class DriveBase implements Subsystem
       {
          desiredAngle = Math.abs(getAngle(leftX, leftY));
          Core.getStateTracker().addState("Desired angle", "Desired angle", desiredAngle);
+         Core.getStateTracker().addState("Encoder angle", "Encoder angle", encodeAngleUL);
          desiredAngleUR = limitAngle(desiredAngle + encoderOffsetUR);
          desiredAngleUL = limitAngle(desiredAngle + encoderOffsetUL);
          desiredAngleLR = limitAngle(desiredAngle + encoderOffsetLR);
          desiredAngleLL = limitAngle(desiredAngle + encoderOffsetLL);
 
-         Core.getStateTracker().addState("Encoder offset", "Encoder offset", encoderOffsetUR);
-         Core.getStateTracker().addState("Target encoder angle", "Target encoder angle", desiredAngleUR);
+         Core.getStateTracker().addState("Encoder offset", "Encoder offset", encoderOffsetUL);
+         Core.getStateTracker().addState("Target encoder angle", "Target encoder angle", desiredAngleUL);
 
          magnitude = Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)); // here we get the raw magnitude from Pythagorean Theorem
 
@@ -210,8 +211,7 @@ public class DriveBase implements Subsystem
          rotMagLL = newGetRotMag(encodeAngleLL, desiredAngleLL);
 
          Core.getStateTracker().addState("Magnitude", "Magnitude", magnitude);
-         Core.getStateTracker().addState("isOpposite", "isOpposite", isOpposite);
-         Core.getStateTracker().addState("Rotation magnitude", "Rotation magnitude", rotMagUR);
+         Core.getStateTracker().addState("Rotation magnitude", "Rotation magnitude", rotMagUL);
 
          if (Math.abs(magnitude) < .25)
          {
@@ -425,7 +425,7 @@ public class DriveBase implements Subsystem
       //if final is less than 180 and initial is less than 180 greater than final
       //then distance is negative
       if (finalAngle <= (Math.PI)) {
-         if (initialAngle < finalAngle + 180) {
+         if (initialAngle < finalAngle + Math.PI) {
          diff *= -1;
        }
       } 
