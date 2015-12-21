@@ -425,7 +425,7 @@ public class DriveBase implements Subsystem
       //if final is less than 180 and initial is less than 180 greater than final
       //then distance is negative
       if (finalAngle <= (Math.PI)) {
-         if (initialAngle < finalAngle + 180) {
+         if (initialAngle < finalAngle + Math.PI) {
          diff *= -1;
        }
       } 
