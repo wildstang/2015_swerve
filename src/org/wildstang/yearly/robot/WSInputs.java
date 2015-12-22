@@ -64,10 +64,10 @@ public enum WSInputs implements Inputs
    HALL_EFFECT3("LRHeffect", WSInputType.SWITCH, new WsDigitalInputConfig(2, true), true),
    HALL_EFFECT4("LLHeffect", WSInputType.SWITCH, new WsDigitalInputConfig(3, true), true),
 //   POT("Pot", WSInputType.POT, new WsAnalogInputConfig(0), true),
-   ABSOLUTE_ENCODER1("UREncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(0, 5), true),
-   ABSOLUTE_ENCODER2("ULEncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(1, 5), true),
-   ABSOLUTE_ENCODER3("LREncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(2, 5), true),
-   ABSOLUTE_ENCODER4("LLEncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(3, 5), true);
+   ABSOLUTE_ENCODER1("UREncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(1, 5), true),
+   ABSOLUTE_ENCODER2("ULEncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(0, 5), true),
+   ABSOLUTE_ENCODER3("LREncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(3, 5), true),
+   ABSOLUTE_ENCODER4("LLEncoder", WSInputType.ABSOLUTE_ENCODER, new WsAbsoluteEncoderConfig(2, 5), true);
    
 
    private final String m_name;
