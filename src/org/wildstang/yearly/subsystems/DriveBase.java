@@ -303,26 +303,22 @@ public class DriveBase implements Subsystem
       {
          if (getAbsAngleDistance(oppositeDesired, actual) < 0)
          {
-//             rotateMag = 1d / 2;
             rotateMag = -1d / 2;
          }
          else
          {
             rotateMag = 1d / 2;
-//             rotateMag = -1d / 2;
          }
       }
       else
       {
          if (getAbsAngleDistance(desired, actual) < 0)
          {
-//             rotateMag = 1d / 2;
             rotateMag = -1d / 2;
          }
          else
          {
             rotateMag = 1d / 2;
-//             rotateMag = -1d / 2;
          }
       }
 
