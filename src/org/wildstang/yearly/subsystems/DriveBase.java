@@ -191,24 +191,24 @@ public class DriveBase implements Subsystem
 
          double angleDistance = getAngleDistance(encodeAngleUL, desiredAngleUL);
          Core.getStateTracker().addState("angleDistance", "angleDistance", angleDistance);
-//         if (angleDistance > Math.PI / 2)
-//         {
-//            isOpposite = true;
-//            magnitude *= -1;
-//         }
-//         else
-//         {
-//            isOpposite = false;
-//         }
-//         rotMagUR = getRotMag(encodeAngleUR, desiredAngleUR);
-//         rotMagUL = getRotMag(encodeAngleUL, desiredAngleUL);
-//         rotMagLR = getRotMag(encodeAngleLR, desiredAngleLR);
-//         rotMagLL = getRotMag(encodeAngleLL, desiredAngleLL);
+         if (angleDistance > Math.PI / 2)
+         {
+            isOpposite = true;
+            magnitude *= -1;
+         }
+         else
+         {
+            isOpposite = false;
+         }
+         rotMagUR = getRotMag(encodeAngleUR, desiredAngleUR);
+         rotMagUL = getRotMag(encodeAngleUL, desiredAngleUL);
+         rotMagLR = getRotMag(encodeAngleLR, desiredAngleLR);
+         rotMagLL = getRotMag(encodeAngleLL, desiredAngleLL);
          
-         rotMagUR = newGetRotMag(encodeAngleUR, desiredAngleUR);
-         rotMagUL = newGetRotMag(encodeAngleUL, desiredAngleUL);
-         rotMagLR = newGetRotMag(encodeAngleLR, desiredAngleLR);
-         rotMagLL = newGetRotMag(encodeAngleLL, desiredAngleLL);
+//         rotMagUR = newGetRotMag(encodeAngleUR, desiredAngleUR);
+//         rotMagUL = newGetRotMag(encodeAngleUL, desiredAngleUL);
+//         rotMagLR = newGetRotMag(encodeAngleLR, desiredAngleLR);
+//         rotMagLL = newGetRotMag(encodeAngleLL, desiredAngleLL);
 
          Core.getStateTracker().addState("Magnitude", "Magnitude", magnitude);
          Core.getStateTracker().addState("Rotation magnitude", "Rotation magnitude", rotMagUL);
@@ -296,43 +296,45 @@ public class DriveBase implements Subsystem
    // sets mag and direction of rotation motor
    private double getRotMag(double actual, double desired)
    {
-      double rotateMag;
+      double rotateMag = MAXROTATESPEED;
       double oppositeDesired = limitAngle(Math.PI + desired);
       double angleDistance = getAngleDistance(desired, actual);
+      double oppositeDistance = getAngleDistance(oppositeDesired, actual);
       if (isOpposite)
       {
          if (getAbsAngleDistance(oppositeDesired, actual) < 0)
          {
-            rotateMag = -1d / 2;
+            rotateMag *= -1;
          }
-         else
+
+         if (Math.abs(oppositeDistance) < (Math.PI / 9))
          {
-            rotateMag = 1d / 2;
+            // Deadband = 1 degree
+            rotateMag *= (angleDistance / (Math.PI / 9));
+            if (angleDistance < DEADBAND)
+            {
+               return 0;
+            }
          }
       }
       else
       {
          if (getAbsAngleDistance(desired, actual) < 0)
          {
-            rotateMag = -1d / 2;
+            rotateMag *= -1;
          }
-         else
+
+         if (Math.abs(angleDistance) < (Math.PI / 9))
          {
-            rotateMag = 1d / 2;
+            // Deadband = 1 degree
+            rotateMag *= (angleDistance / (Math.PI / 9));
+            if (angleDistance < DEADBAND)
+            {
+               return 0;
+            }
          }
       }
 
-      rotateMag /= 2;
-
-      if (Math.abs(angleDistance) < (Math.PI / 9))
-      {
-         // Deadband = 1 degree
-         rotateMag *= (angleDistance / (Math.PI / 9));
-         if (angleDistance < DEADBAND)
-         {
-            return 0;
-         }
-      }
       return rotateMag;
    }
    
